@@ -1,43 +1,191 @@
 <div class="container">
-  <div>
-    <h2>CV Builder</h2>
-    <button class="btn btn-primary mt-4" (click)="createPdf()">Click me</button>
+  <div style="display: flex; justify-content: space-between">
+    <h2 style="margin-top: 20px">CV Builder</h2>
+    <div style="display: flex; gap: 15px">
+      <button class="btn btn-primary mt-4" (click)="createPdf()">
+        View pdf
+      </button>
+      <button class="btn btn-primary mt-4" (click)="downloadPdf()">
+        Download pdf
+      </button>
+    </div>
   </div>
 
   <div class="mt-4">
-    <div>
+    <div style="margin-bottom: 12px">
       <h4 class="mb-3 font-weight-bold">Personal Info</h4>
-      <!-- Personal Info form content -->
+      <form>
+        <div class="row">
+          <div class="form-group col">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              placeholder="Enter your name"
+            />
+          </div>
+          <div class="form-group col">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="form-group col">
+            <label for="phone">Phone</label>
+            <input
+              type="tel"
+              class="form-control"
+              id="phone"
+              placeholder="Enter your phone number"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <h4 class="mb-3 font-weight-bold">Education</h4>
+      </div>
+      <div class="col-4">
+        <div class="card-group">
+          <div class="card" *ngFor="let item of education">
+            <div class="card-body">
+              <h5 class="card-title">{{ item.degree }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">
+                {{ item.institute }}
+              </h6>
+              <p class="card-text">
+                {{ item.dateStart | date }} - {{ item.dateEnd | date }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div>
-      <h4 class="mb-3 font-weight-bold">
-        Education
-        <button class="btn btn-link btn-sm" (click)="addEducation()">
-          <i class="fas fa-plus"></i>
-        </button>
-      </h4>
+      <button class="btn btn-link btn-sm" (click)="addEducation()">
+        <i class="fas fa-plus">Add</i>
+      </button>
       <form>
-        <!-- Education form content -->
+        <div class="row">
+          <div class="form-group col">
+            <label for="degree">Degree</label>
+            <input
+              type="text"
+              class="form-control"
+              id="degree"
+              placeholder="Enter your degree"
+            />
+          </div>
+          <div class="form-group col">
+            <label for="institution">Institution</label>
+            <input
+              type="institution"
+              class="form-control"
+              id="institution"
+              placeholder="Enter your institution"
+            />
+          </div>
+
+          <!-- <mat-form-field class="form-group col">
+            <label for="year">Year</label>
+            <input
+              matInput
+              type="tel"
+              class="form-control"
+              id="year"
+              placeholder="Enter your year number"
+              [matDatepicker]="yearPicker"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="yearPicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #yearPicker style="width: 200px"></mat-datepicker>
+          </mat-form-field> -->
+        </div>
       </form>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <h4 class="mb-3 font-weight-bold">Experience</h4>
+      </div>
+      <div class="col-4">
+        <div class="card-group">
+          <div class="card" *ngFor="let item of experience">
+            <div class="card-body">
+              <h5 class="card-title">{{ item.company }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{ item.charge }}</h6>
+              <p class="card-text">
+                {{ item.dateStart | date }} - {{ item.dateEnd | date }}
+              </p>
+              <p class="card-text">{{ item.description }}</p>
+              <ul>
+                <li *ngFor="let function of item.functions">{{ function }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button class="btn btn-link btn-sm" (click)="addEducation()">
+          <i class="fas fa-plus">Add</i>
+        </button>
+        <form>
+          <div class="row">
+            <div class="form-group col">
+              <label for="company">Company</label>
+              <input
+                type="text"
+                class="form-control"
+                id="company"
+                placeholder="Enter your company"
+              />
+            </div>
+            <div class="form-group col">
+              <label for="position">Position</label>
+              <input
+                type="position"
+                class="form-control"
+                id="position"
+                placeholder="Enter your position"
+              />
+            </div>
+            <div class="form-group col">
+              <label for="year1">Enter Year</label>
+              <input
+                type="year"
+                class="form-control"
+                id="year1"
+                placeholder="Enter your enter year number"
+              />
+            </div>
+            <div class="form-group col">
+              <label for="year2">Finish Year</label>
+              <input
+                type="year"
+                class="form-control"
+                id="year2"
+                placeholder="Enter your finish year number"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
 
     <div class="mt-4">
-      <h4 class="mb-3 font-weight-bold">
-        Experience
-        <button class="btn btn-link btn-sm" (click)="addExperience()">
-          <i class="fas fa-plus"></i>
-        </button>
-      </h4>
-      <form>
-        <!-- Experience form content -->
-      </form>
+      <ng-container *ngIf="pdfSrc">
+        <iframe [src]="pdfSrc" width="100%" height="500px"></iframe>
+      </ng-container>
     </div>
-  </div>
-
-  <div class="mt-4">
-    <ng-container *ngIf="pdfSrc">
-      <iframe [src]="pdfSrc" width="100%" height="500px"></iframe>
-    </ng-container>
   </div>
 </div>
