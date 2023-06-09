@@ -8,50 +8,120 @@
       <button class="btn btn-primary mt-4" (click)="downloadPdf()">
         Download pdf
       </button>
+      <button class="btn btn-primary mt-4" (click)="sendData()">
+        Send data
+      </button>
     </div>
   </div>
 
-  <div class="mt-4">
-    <div style="margin-bottom: 12px">
+  <div class="mt-4 form-sections">
+    <div style="margin-bottom: 24px">
       <h4 class="mb-3 font-weight-bold">Personal Info</h4>
-      <form>
+      <form [formGroup]="cvForm">
         <div class="row">
           <div class="form-group col">
             <label for="name">Name</label>
             <input
+              formControlName="name"
               type="text"
               class="form-control"
               id="name"
               placeholder="Enter your name"
             />
+            <div
+              *ngIf="cvForm.get('name').invalid && cvForm.get('name').touched"
+            >
+              <div *ngIf="cvForm.get('name').hasError('required')">
+                Name is required
+              </div>
+            </div>
           </div>
+
           <div class="form-group col">
             <label for="email">Email</label>
             <input
-              type="email"
+              formControlName="email"
+              type="text"
               class="form-control"
               id="email"
               placeholder="Enter your email"
             />
+            <div
+              *ngIf="cvForm.get('email').invalid && cvForm.get('email').touched"
+            >
+              <div *ngIf="cvForm.get('email').hasError('required')">
+                Email is required
+              </div>
+            </div>
           </div>
+
           <div class="form-group col">
             <label for="phone">Phone</label>
             <input
-              type="tel"
+              formControlName="phone"
+              type="text"
               class="form-control"
               id="phone"
-              placeholder="Enter your phone number"
+              placeholder="Enter your phone"
             />
+            <div
+              *ngIf="cvForm.get('phone').invalid && cvForm.get('phone').touched"
+            >
+              <div *ngIf="cvForm.get('phone').hasError('required')">
+                Phone is required
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col">
+            <label for="headline">Headline</label>
+            <input
+              formControlName="headline"
+              type="text"
+              class="form-control"
+              id="headline"
+              placeholder="Enter your headline"
+            />
+            <div
+              *ngIf="
+                cvForm.get('headline').invalid && cvForm.get('headline').touched
+              "
+            >
+              <div *ngIf="cvForm.get('headline').hasError('required')">
+                Headline is required
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group col">
+            <label for="profile">Profile</label>
+            <input
+              formControlName="profile"
+              type="text"
+              class="form-control"
+              id="profile"
+              placeholder="Enter your profile"
+            />
+            <div
+              *ngIf="
+                cvForm.get('profile').invalid && cvForm.get('profile').touched
+              "
+            >
+              <div *ngIf="cvForm.get('profile').hasError('required')">
+                Profile is required
+              </div>
+            </div>
           </div>
         </div>
       </form>
     </div>
 
-    <div class="row">
+    <div class="row" style="margin-bottom: 24px">
       <div class="col-12">
         <h4 class="mb-3 font-weight-bold">Education</h4>
       </div>
-      <div class="col-4">
+      <div class="col-4 education-cards">
         <div class="card-group">
           <div class="card" *ngFor="let item of education">
             <div class="card-body">
@@ -59,16 +129,14 @@
               <h6 class="card-subtitle mb-2 text-muted">
                 {{ item.institute }}
               </h6>
-              <p class="card-text">
-                {{ item.dateStart | date }} - {{ item.dateEnd | date }}
-              </p>
+              <p class="card-text">{{ item.dateStart }} - {{ item.dateEnd }}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div>
+    <div class="row" style="margin-bottom: 24px">
       <button class="btn btn-link btn-sm" (click)="addEducation()">
         <i class="fas fa-plus">Add</i>
       </button>
@@ -113,7 +181,7 @@
       </form>
     </div>
 
-    <div class="row">
+    <div class="row" style="margin-bottom: 24px">
       <div class="col-12">
         <h4 class="mb-3 font-weight-bold">Experience</h4>
       </div>
@@ -123,9 +191,7 @@
             <div class="card-body">
               <h5 class="card-title">{{ item.company }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{ item.charge }}</h6>
-              <p class="card-text">
-                {{ item.dateStart | date }} - {{ item.dateEnd | date }}
-              </p>
+              <p class="card-text">{{ item.dateStart }} - {{ item.dateEnd }}</p>
               <p class="card-text">{{ item.description }}</p>
               <ul>
                 <li *ngFor="let function of item.functions">{{ function }}</li>
@@ -182,7 +248,7 @@
       </div>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-4 pdf-viewer">
       <ng-container *ngIf="pdfSrc">
         <iframe [src]="pdfSrc" width="100%" height="500px"></iframe>
       </ng-container>
