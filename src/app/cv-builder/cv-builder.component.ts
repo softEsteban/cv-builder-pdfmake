@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { FormControl } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CvService } from './cv.service';
 
 export interface CVFormData {
   personalInfo: {
@@ -42,12 +41,59 @@ export interface ExperienceItem {
 })
 export class CVBuilderComponent implements OnInit {
 
+  @ViewChild('skillsSelect') skillsSelect: any;
+
   cvForm: FormGroup;
 
   pdfSrc: SafeResourceUrl;
   pdfDefinition: any = {};
 
-  constructor(private sanitizer: DomSanitizer, private formBuilder: FormBuilder) {
+  selectedSkill: string = "";
+  searchQuery: string;
+
+  skills: string[] = ['Nodejs', 'Angular', 'Nestjs', 'Vuejs', 'PostgreSQL', 'SQL Server', 'MySQL', 'MongoDB'];
+  skillsRes: string[] = [];
+
+  education: EducationItem[] = [
+    {
+      institute: "Universidad de Caldas",
+      degree: "Software development diplomat",
+      dateStart: new Date('2021-01-01'),
+      dateEnd: new Date('2021-01-01')
+    }
+  ];
+
+  experience: ExperienceItem[] = [
+    {
+      company: "IBM",
+      charge: "Solutions Architech",
+      description: "Improving and creating new solutions",
+      functions: ["Gathering technical requeriments", "Creating structure models and plans"],
+      dateStart: new Date('2021-01-01'),
+      dateEnd: new Date('2021-01-01')
+    }
+  ];
+
+  educationContent = this.education.map(item => [
+    { text: item.degree, bold: true, margin: [0, 10] },
+    { text: item.institute, margin: [0, 5] },
+    { text: item.dateStart.getFullYear() + ' - ' + item.dateEnd.getFullYear(), margin: [0, 5] },
+  ]);
+
+  experienceContent = this.experience.map(item => [
+    { text: item.company, bold: true, margin: [0, 10] },
+    { text: 'Position: ' + item.charge, margin: [0, 5] },
+    { text: 'Duration: ' + item.dateStart.getFullYear() + ' - ' + item.dateEnd.getFullYear(), margin: [0, 5] },
+    { text: 'Responsibilities:', margin: [0, 10] },
+    { ul: item.functions, margin: [20, 0] },
+  ]);
+
+
+
+  constructor(
+    private sanitizer: DomSanitizer,
+    private cvService: CvService,
+    private formBuilder: FormBuilder) {
     this.cvForm = this.formBuilder.group({
       name: ['Esteban Toro Aristizabal', Validators.required],
       email: ['estebantoro.greenman@gmail.com', [Validators.required, Validators.email]],
@@ -95,41 +141,7 @@ export class CVBuilderComponent implements OnInit {
     };
   }
 
-  skills: string[] = ['Nodejs', 'Angular', 'Nestjs', 'Vuejs', 'PostgreSQL', 'SQL Server', 'MySQL', 'MongoDB'];
 
-  education: EducationItem[] = [
-    {
-      institute: "Universidad de Caldas",
-      degree: "Software development diplomat",
-      dateStart: new Date('2021-01-01'),
-      dateEnd: new Date('2021-01-01')
-    }
-  ];
-
-  experience: ExperienceItem[] = [
-    {
-      company: "IBM",
-      charge: "Solutions Architech",
-      description: "Improving and creating new solutions",
-      functions: ["Gathering technical requeriments", "Creating structure models and plans"],
-      dateStart: new Date('2021-01-01'),
-      dateEnd: new Date('2021-01-01')
-    }
-  ];
-
-  educationContent = this.education.map(item => [
-    { text: item.degree, bold: true, margin: [0, 10] },
-    { text: item.institute, margin: [0, 5] },
-    { text: item.dateStart.getFullYear() + ' - ' + item.dateEnd.getFullYear(), margin: [0, 5] },
-  ]);
-
-  experienceContent = this.experience.map(item => [
-    { text: item.company, bold: true, margin: [0, 10] },
-    { text: 'Position: ' + item.charge, margin: [0, 5] },
-    { text: 'Duration: ' + item.dateStart.getFullYear() + ' - ' + item.dateEnd.getFullYear(), margin: [0, 5] },
-    { text: 'Responsibilities:', margin: [0, 10] },
-    { ul: item.functions, margin: [20, 0] },
-  ]);
 
   ngOnInit() { }
 
@@ -166,5 +178,33 @@ export class CVBuilderComponent implements OnInit {
 
   addEducation() { }
   addExperience() { }
-}
 
+  addSkill() {
+    if (this.selectedSkill) {
+      this.skills.push(this.selectedSkill)
+    }
+  }
+
+  deleteSkill(skillToDelete: string) {
+    const index = this.skills.findIndex(skill => skill === skillToDelete);
+    if (index !== -1) {
+      this.skills.splice(index, 1);
+    }
+  }
+
+  async handleSearchChange() {
+    if (this.searchQuery !== "") {
+      console.log("Search change", this.searchQuery);
+      const skillRes = await this.cvService.getSkills(this.searchQuery);
+      if (skillRes.length > 0) {
+        this.skillsRes = [...skillRes];
+
+        setTimeout(() => {
+          this.skillsSelect.selected = true;
+        }, 0);
+      }
+    }
+  }
+
+
+}
