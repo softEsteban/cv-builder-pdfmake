@@ -5,6 +5,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CvService } from './cv.service';
+import { Subject, debounceTime } from 'rxjs';
 
 export interface CVFormData {
   personalInfo: {
@@ -45,13 +46,20 @@ export class CVBuilderComponent implements OnInit {
 
   cvForm: FormGroup;
 
+  userName: string = "";
+
+  alertMessage: string = "";
+  alertType: string = "";
+  showAlert: boolean = false;
+
   pdfSrc: SafeResourceUrl;
   pdfDefinition: any = {};
 
   selectedSkill: string = "";
-  searchQuery: string;
+  searchQuery: string = "";
+  searchQuery$: Subject<string> = new Subject<string>();
 
-  loading: boolean = false;
+  showSpinner: boolean = false;
   skills: string[] = ['Nodejs', 'Angular', 'Nestjs', 'Vuejs', 'PostgreSQL', 'SQL Server', 'MySQL', 'MongoDB'];
   skillsRes: string[] = [];
 
@@ -142,7 +150,9 @@ export class CVBuilderComponent implements OnInit {
 
   ngOnInit() { }
 
-  createPdf() {
+  viewPdf() {
+    this.userName = this.cvForm.value.name || '';
+
     this.pdfDefinition = {
       content: [
         {
@@ -184,10 +194,17 @@ export class CVBuilderComponent implements OnInit {
       const base64 = `data:application/pdf;base64,${data}`;
       this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(base64);
     });
+
+    // Scroll to the PDF section
+    setTimeout(() => {
+      const cvSection = document.getElementById('cv-section');
+      window.scrollTo({ top: cvSection.offsetTop, behavior: 'smooth' });
+
+    }, 2000);
   }
 
   downloadPdf() {
-    const userName = this.cvForm.value.name || '';
+    this.userName = this.cvForm.value.name || '';
 
     this.pdfDefinition = {
       content: [
@@ -224,7 +241,7 @@ export class CVBuilderComponent implements OnInit {
     this.pdfDefinition.content[0].columns[0].stack[4].ul = this.skills.map(skill => ({ text: skill }));
 
     const pdfDocGenerator = pdfMake.createPdf(this.pdfDefinition);
-    pdfDocGenerator.download(`CV-${userName.replace(" ", "-")}.pdf`);
+    pdfDocGenerator.download(`CV-${this.userName.replace(" ", "-")}.pdf`);
   }
 
   sendData() {
@@ -244,9 +261,16 @@ export class CVBuilderComponent implements OnInit {
   addEducation() { }
   addExperience() { }
 
+  editEducation(item: EducationItem) { }
+  editExperience(item: ExperienceItem) { }
+
   addSkill() {
-    if (this.selectedSkill) {
+    const contains = this.skills.includes(this.selectedSkill || "");
+    if (this.selectedSkill && !contains) {
       this.skills.push(this.selectedSkill)
+    }
+    else {
+      this.showMessageAlert(`${this.selectedSkill} is already in skills`, 2);
     }
   }
 
@@ -257,23 +281,43 @@ export class CVBuilderComponent implements OnInit {
     }
   }
 
-  async handleSearchChange() {
-    this.loading = false;
+
+  handleSearchChange() {
+    this.showSpinner = true;
 
     if (this.searchQuery !== "") {
+      // Delay the API request by 500 milliseconds
+      this.searchQuery$
+        .pipe(debounceTime(500))
+        .subscribe(async (query) => {
+          const skillRes = await this.cvService.getSkills(query);
 
-      this.loading = true;
-      const skillRes = await this.cvService.getSkills(this.searchQuery);
+          if (skillRes.length > 0) {
+            this.skillsRes = [...skillRes];
+            this.skillsSelect.selected = true;
+          } else {
+            this.showMessageAlert(`${query} has no results!`, 3);
+          }
 
-      if (skillRes.length > 0) {
-        this.skillsRes = [...skillRes];
-        this.skillsSelect.selected = true;
-        this.loading = false;
-      } else {
-        this.loading = false;
-      }
+          this.showSpinner = false;
+        });
 
+      // Emit the search query to trigger the API request
+      this.searchQuery$.next(this.searchQuery);
+    } else {
+      this.showSpinner = false;
     }
+  }
+
+
+  async showMessageAlert(message: string, delay: number) {
+    this.alertMessage = message;
+    this.showAlert = true;
+
+    setTimeout(() => {
+      this.alertMessage = "";
+      this.showAlert = false;
+    }, delay * 1000);
   }
 
 

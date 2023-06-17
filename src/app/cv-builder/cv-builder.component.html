@@ -18,50 +18,60 @@
   </head>
   <body>
     <!-- Navbar -->
-    <div class="fixed-top bg-light">
-      <div class="container">
-        <div class="row">
-          <div class="col-6">
-            <h2 class="my-3">CV Builder</h2>
-          </div>
-          <div class="col-6">
-            <div class="d-flex justify-content-end my-3">
-              <button
-                class="btn btn-primary mr-2 d-none d-sm-block"
-                (click)="createPdf()"
-              >
-                View pdf
-              </button>
-              <button
-                class="btn btn-primary mr-2 d-none d-sm-block"
-                (click)="downloadPdf()"
-              >
-                Download pdf
-              </button>
-              <button
-                class="btn btn-primary d-none d-sm-block"
-                (click)="sendData()"
-              >
-                Send data
-              </button>
-              <div class="d-sm-none">
-                <!-- Icons for small screens -->
-                <button class="btn btn-primary mt-4 mr-2" (click)="createPdf()">
-                  <i class="fas fa-eye"></i>
+    <div class="fixed-top">
+      <div class="bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-6">
+              <h2 class="my-3">CV Builder</h2>
+            </div>
+            <div class="col-6">
+              <div class="d-flex justify-content-end my-3">
+                <button
+                  class="btn btn-primary mr-2 d-none d-sm-block"
+                  (click)="viewPdf()"
+                >
+                  View pdf
                 </button>
                 <button
-                  class="btn btn-primary mt-4 mr-2"
+                  class="btn btn-primary mr-2 d-none d-sm-block"
                   (click)="downloadPdf()"
                 >
-                  <i class="fas fa-download"></i>
+                  Download pdf
                 </button>
-                <button class="btn btn-primary mt-4" (click)="sendData()">
-                  <i class="fas fa-paper-plane"></i>
+                <button
+                  class="btn btn-primary d-none d-sm-block"
+                  (click)="sendData()"
+                >
+                  Send data
                 </button>
+                <div class="d-sm-none">
+                  <!-- Icons for small screens -->
+                  <button class="btn btn-primary mt-4 mr-2" (click)="viewPdf()">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button
+                    class="btn btn-primary mt-4 mr-2"
+                    (click)="downloadPdf()"
+                  >
+                    <i class="fas fa-download"></i>
+                  </button>
+                  <button class="btn btn-primary mt-4" (click)="sendData()">
+                    <i class="fas fa-paper-plane"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div
+        *ngIf="showAlert && alertMessage != ''"
+        class="alert alert-danger"
+        role="alert"
+      >
+        {{ alertMessage }}
       </div>
     </div>
 
@@ -181,6 +191,9 @@
           </div>
         </form>
       </div>
+
+      <hr class="hr" />
+
       <!-- Education -->
       <div class="row" style="margin-bottom: 24px">
         <div style="display: flex; justify-content: space-between">
@@ -200,61 +213,53 @@
                 <p class="card-text">
                   {{ item.dateStart }} - {{ item.dateEnd }}
                 </p>
+                <button class="btn btn-primary" (click)="editEducation(item)">
+                  Edit
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Add form -->
-      <div class="row" style="margin-bottom: 24px">
-        <form>
-          <div class="row">
-            <div class="form-group col">
-              <label for="degree">Degree</label>
-              <input
-                type="text"
-                class="form-control"
-                id="degree"
-                placeholder="Enter your degree"
-              />
-            </div>
-            <div class="form-group col">
-              <label for="institution">Institution</label>
-              <input
-                type="institution"
-                class="form-control"
-                id="institution"
-                placeholder="Enter your institution"
-              />
-            </div>
 
-            <!-- <mat-form-field class="form-group col">
-            <label for="year">Year</label>
-            <input
-              matInput
-              type="tel"
-              class="form-control"
-              id="year"
-              placeholder="Enter your year number"
-              [matDatepicker]="yearPicker"
-            />
-            <mat-datepicker-toggle
-              matSuffix
-              [for]="yearPicker"
-            ></mat-datepicker-toggle>
-            <mat-datepicker #yearPicker style="width: 200px"></mat-datepicker>
-          </mat-form-field> -->
-          </div>
-        </form>
+      <!-- Add form -->
+      <div class="row">
+        <div class="form-group col-sm-12 col-md-4">
+          <label for="name">Degree</label>
+          <input
+            type="text"
+            class="form-control"
+            id="degree"
+            placeholder="Enter your degree"
+          />
+          <!-- <div *ngIf="cvForm.get('name').invalid && cvForm.get('name').touched">
+            <div *ngIf="cvForm.get('name').hasError('required')">
+              Name is required
+            </div>
+          </div> -->
+        </div>
+        <div class="form-group col-sm-12 col-md-4">
+          <label for="name">Institution</label>
+          <input
+            type="text"
+            class="form-control"
+            id="degree"
+            placeholder="Enter your institution"
+          />
+          <!-- <div *ngIf="cvForm.get('name').invalid && cvForm.get('name').touched">
+            <div *ngIf="cvForm.get('name').hasError('required')">
+              Name is required
+            </div>
+          </div> -->
+        </div>
       </div>
+
+      <hr class="hr" />
 
       <!-- Experience -->
       <div class="row" style="margin-bottom: 24px">
         <div style="display: flex; justify-content: space-between">
           <h4 class="mb-3 font-weight-bold">Experience</h4>
-          <button type="button" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add
-          </button>
         </div>
         <div class="col-lg-4 col-sm-6">
           <div class="card-group">
@@ -273,54 +278,59 @@
                     {{ function }}
                   </li>
                 </ul>
+                <button class="btn btn-primary" (click)="editExperience(item)">
+                  Edit
+                </button>
               </div>
             </div>
           </div>
         </div>
 
         <div>
-          <form>
-            <div class="row">
-              <div class="form-group col">
-                <label for="company">Company</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="company"
-                  placeholder="Enter your company"
-                />
-              </div>
-              <div class="form-group col">
-                <label for="position">Position</label>
-                <input
-                  type="position"
-                  class="form-control"
-                  id="position"
-                  placeholder="Enter your position"
-                />
-              </div>
-              <div class="form-group col">
-                <label for="year1">Enter Year</label>
-                <input
-                  type="year"
-                  class="form-control"
-                  id="year1"
-                  placeholder="Enter your enter year number"
-                />
-              </div>
-              <div class="form-group col">
-                <label for="year2">Finish Year</label>
-                <input
-                  type="year"
-                  class="form-control"
-                  id="year2"
-                  placeholder="Enter your finish year number"
-                />
+          <div class="row">
+            <div class="form-group col-sm-12 col-md-6">
+              <label for="company">Company</label>
+              <input
+                type="text"
+                class="form-control"
+                id="company"
+                placeholder="Enter your company"
+              />
+            </div>
+            <div class="form-group col-sm-12 col-md-6">
+              <label for="position">Position</label>
+              <input
+                type="text"
+                class="form-control"
+                id="position"
+                placeholder="Enter your position"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-sm-12 col-md-4">
+              <label for="datepicker">Date</label>
+              <div class="input-group">
+                <input type="date" id="datepicker" class="form-control" />
               </div>
             </div>
-          </form>
+            <div class="form-group col-sm-12 col-md-4">
+              <label for="datepicker">Date</label>
+              <div class="input-group">
+                <input type="date" id="datepicker" class="form-control" />
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+              <button type="button" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
+      <hr class="hr" />
 
       <div class="row" style="margin-bottom: 24px">
         <div class="col-lg-2">
@@ -333,15 +343,16 @@
             [(ngModel)]="searchQuery"
             (input)="handleSearchChange()"
             placeholder="Search a skill"
+            id="searchInput"
           />
-          <div *ngIf="loading" class="spinner-border" role="status">
+          <div *ngIf="showSpinner" class="spinner-border" role="status">
             <span class="sr-only"></span>
           </div>
           <select
             #skillsSelect
             class="custom-select"
             id="inputGroupSelect04"
-            [disabled]="loading"
+            [disabled]="showSpinner"
             [(ngModel)]="selectedSkill"
           >
             <option selected>Choose a skill</option>
@@ -379,12 +390,50 @@
         </div>
       </div>
 
+      <hr class="hr" />
+
       <div class="mt-4 pdf-viewer">
         <ng-container *ngIf="pdfSrc">
+          <h4 id="cv-section" class="mb-3 font-weight-bold">
+            {{ userName + " CV" }}
+          </h4>
           <iframe [src]="pdfSrc" width="100%" height="500px"></iframe>
         </ng-container>
       </div>
     </div>
+
+    <footer class="footer bg-light text-dark">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 mt-5">
+            <h5>About</h5>
+            <p>A playgroud to generate a CV with defined structure!</p>
+          </div>
+          <div class="col-lg-6 mt-5">
+            <h5>Reach me</h5>
+            <ul class="list-unstyled">
+              <li>
+                <i class="fas fa-map-marker-alt"></i> Made in Colombia with love
+              </li>
+              <li>
+                <i class="fas fa-envelope"></i> estebantoro.greenman@gmail.com
+              </li>
+              <li>
+                <i class="fab fa-github"></i>
+                <a
+                  href="https://github.com/softEsteban"
+                  target="_blank"
+                  class="custom-link"
+                >
+                  github.com/softEsteban
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="text-center py-3">&copy; 2023 All rights reserved.</div>
+    </footer>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
