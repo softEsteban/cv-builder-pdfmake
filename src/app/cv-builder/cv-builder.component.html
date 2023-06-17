@@ -17,23 +17,48 @@
     />
   </head>
   <body>
+    <!-- Navbar -->
     <div class="fixed-top bg-light">
       <div class="container">
         <div class="row">
-          <div class="col-lg-6">
+          <div class="col-6">
             <h2 class="my-3">CV Builder</h2>
           </div>
-          <div class="col-lg-6">
-            <div class="d-flex justify-content-end">
-              <button class="btn btn-primary mt-4" (click)="createPdf()">
+          <div class="col-6">
+            <div class="d-flex justify-content-end my-3">
+              <button
+                class="btn btn-primary mr-2 d-none d-sm-block"
+                (click)="createPdf()"
+              >
                 View pdf
               </button>
-              <button class="btn btn-primary mt-4" (click)="downloadPdf()">
+              <button
+                class="btn btn-primary mr-2 d-none d-sm-block"
+                (click)="downloadPdf()"
+              >
                 Download pdf
               </button>
-              <button class="btn btn-primary mt-4" (click)="sendData()">
+              <button
+                class="btn btn-primary d-none d-sm-block"
+                (click)="sendData()"
+              >
                 Send data
               </button>
+              <div class="d-sm-none">
+                <!-- Icons for small screens -->
+                <button class="btn btn-primary mt-4 mr-2" (click)="createPdf()">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button
+                  class="btn btn-primary mt-4 mr-2"
+                  (click)="downloadPdf()"
+                >
+                  <i class="fas fa-download"></i>
+                </button>
+                <button class="btn btn-primary mt-4" (click)="sendData()">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -164,7 +189,7 @@
             <i class="fas fa-plus"></i> Add
           </button>
         </div>
-        <div class="col-4 education-cards">
+        <div class="col-lg-4 col-sm-6 education-cards">
           <div class="card-group">
             <div class="card" *ngFor="let item of education">
               <div class="card-body">
@@ -231,7 +256,7 @@
             <i class="fas fa-plus"></i> Add
           </button>
         </div>
-        <div class="col-4">
+        <div class="col-lg-4 col-sm-6">
           <div class="card-group">
             <div class="card" *ngFor="let item of experience">
               <div class="card-body">
@@ -254,9 +279,6 @@
         </div>
 
         <div>
-          <button class="btn btn-link btn-sm" (click)="addEducation()">
-            <i class="fas fa-plus">Add</i>
-          </button>
           <form>
             <div class="row">
               <div class="form-group col">
@@ -301,45 +323,48 @@
       </div>
 
       <div class="row" style="margin-bottom: 24px">
-        <div style="display: flex; justify-content: space-between">
+        <div class="col-lg-2">
           <h4 class="mb-3 font-weight-bold">Skills</h4>
-
-          <div class="input-group" style="max-width: 18%">
-            <input
-              type="text"
-              class="form-control"
-              [(ngModel)]="searchQuery"
-              (change)="handleSearchChange()"
-              placeholder="Enter your search query"
-            />
-            <select
-              #skillsSelect
-              class="custom-select"
-              id="inputGroupSelect04"
-              [(ngModel)]="selectedSkill"
-            >
-              <option selected>Choose a skill</option>
-              <option *ngFor="let skill of skillsRes" [value]="skill">
-                {{ skill }}
-              </option>
-            </select>
-            <button
-              (click)="addSkill()"
-              type="button"
-              [disabled]="selectedSkill === ''"
-              class="btn btn-primary"
-            >
-              <i class="fas fa-plus"></i> Add
-            </button>
+        </div>
+        <div class="col-lg-10 input-group" style="height: 100%; gap: 10px">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="searchQuery"
+            (input)="handleSearchChange()"
+            placeholder="Search a skill"
+          />
+          <div *ngIf="loading" class="spinner-border" role="status">
+            <span class="sr-only"></span>
           </div>
+          <select
+            #skillsSelect
+            class="custom-select"
+            id="inputGroupSelect04"
+            [disabled]="loading"
+            [(ngModel)]="selectedSkill"
+          >
+            <option selected>Choose a skill</option>
+            <option *ngFor="let skill of skillsRes" [value]="skill">
+              {{ skill }}
+            </option>
+          </select>
+          <button
+            (click)="addSkill()"
+            type="button"
+            [disabled]="selectedSkill === ''"
+            class="btn btn-primary"
+          >
+            <i class="fas fa-plus"></i> Add
+          </button>
         </div>
 
-        <div class="row">
+        <div class="row" style="margin-top: 25px">
           <div class="col">
             <div class="d-flex flex-wrap">
               <ng-container *ngFor="let item of skills">
                 <span
-                  style="font-size: 100%; margin-right: 5px"
+                  style="font-size: 100%; margin: 5px 5px 0 0"
                   class="badge badge-pill badge-primary"
                   >{{ item }}
                   <i
@@ -349,33 +374,6 @@
                   ></i>
                 </span>
               </ng-container>
-
-              <!-- <ng-container *ngIf="selectSkill">
-                  
-
-                  <span
-                    style="font-size: 100%; margin-right: 5px"
-                    class="badge badge-pill badge-primary"
-                  >
-                    <i
-                      style="cursor: pointer"
-                      class="fas fa-plus"
-                      (click)="addSkill()"
-                    ></i>
-                  </span>
-                </ng-container> -->
-
-              <!-- <span
-                  *ngIf="!selectSkill"
-                  style="font-size: 100%; margin-right: 5px"
-                  class="badge badge-pill badge-primary"
-                >
-                  <i
-                    style="cursor: pointer"
-                    class="fas fa-plus"
-                    (click)="selectSkill = true"
-                  ></i>
-                </span> -->
             </div>
           </div>
         </div>

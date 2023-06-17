@@ -51,6 +51,7 @@ export class CVBuilderComponent implements OnInit {
   selectedSkill: string = "";
   searchQuery: string;
 
+  loading: boolean = false;
   skills: string[] = ['Nodejs', 'Angular', 'Nestjs', 'Vuejs', 'PostgreSQL', 'SQL Server', 'MySQL', 'MongoDB'];
   skillsRes: string[] = [];
 
@@ -85,10 +86,8 @@ export class CVBuilderComponent implements OnInit {
     { text: 'Position: ' + item.charge, margin: [0, 5] },
     { text: 'Duration: ' + item.dateStart.getFullYear() + ' - ' + item.dateEnd.getFullYear(), margin: [0, 5] },
     { text: 'Responsibilities:', margin: [0, 10] },
-    { ul: item.functions, margin: [20, 0] },
+    { ul: item.functions.map(func => ({ text: func })), margin: [20, 0] },
   ]);
-
-
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -141,12 +140,43 @@ export class CVBuilderComponent implements OnInit {
     };
   }
 
-
-
   ngOnInit() { }
 
   createPdf() {
-    this.initializePdfDefinition();
+    this.pdfDefinition = {
+      content: [
+        {
+          columns: [
+            {
+              stack: [
+                { text: this.cvForm.value.name || '', fontSize: 18, bold: true },
+                { text: this.cvForm.value.headline || '', fontSize: 14, margin: [0, 12] },
+                { text: this.cvForm.value.email || '', fontSize: 10, },
+                { text: this.cvForm.value.phone || '', fontSize: 10, margin: [0, 12] },
+                { ul: null },
+              ],
+              width: '30%',
+            },
+            {
+              stack: [
+                { text: 'Profile', style: 'sectionHeading', margin: [0, 20], color: '#000', background: '#00FF00' },
+                { text: this.cvForm.value.profile || '', margin: [0, 10] },
+                { text: 'Experience', style: 'sectionHeading', margin: [0, 20], color: '#000', background: '#00FF00' },
+                ...this.experienceContent,
+                { text: 'Education', style: 'sectionHeading', margin: [0, 20], color: '#000', background: '#00FF00' },
+                ...this.educationContent,
+              ],
+              width: '70%',
+            },
+          ],
+        },
+      ],
+      styles: {
+        sectionHeading: { fontSize: 14, bold: true, margin: [0, 10] },
+      },
+    };
+    this.pdfDefinition.content[0].columns[0].stack[4].ul = this.skills.map(skill => ({ text: skill }));
+
     const pdfDocGenerator = pdfMake.createPdf(this.pdfDefinition);
 
     // Add to the DOM
@@ -157,9 +187,44 @@ export class CVBuilderComponent implements OnInit {
   }
 
   downloadPdf() {
-    this.initializePdfDefinition();
+    const userName = this.cvForm.value.name || '';
+
+    this.pdfDefinition = {
+      content: [
+        {
+          columns: [
+            {
+              stack: [
+                { text: this.cvForm.value.name || '', fontSize: 18, bold: true },
+                { text: this.cvForm.value.headline || '', fontSize: 14, margin: [0, 12] },
+                { text: this.cvForm.value.email || '', fontSize: 10, },
+                { text: this.cvForm.value.phone || '', fontSize: 10, margin: [0, 12] },
+                { ul: [] },
+              ],
+              width: '30%',
+            },
+            {
+              stack: [
+                { text: 'Profile', style: 'sectionHeading', margin: [0, 20], color: '#000', background: '#00FF00' },
+                { text: this.cvForm.value.profile || '', margin: [0, 10] },
+                { text: 'Experience', style: 'sectionHeading', margin: [0, 20], color: '#000', background: '#00FF00' },
+                ...this.experienceContent,
+                { text: 'Education', style: 'sectionHeading', margin: [0, 20], color: '#000', background: '#00FF00' },
+                ...this.educationContent,
+              ],
+              width: '70%',
+            },
+          ],
+        },
+      ],
+      styles: {
+        sectionHeading: { fontSize: 14, bold: true, margin: [0, 10] },
+      },
+    };
+    this.pdfDefinition.content[0].columns[0].stack[4].ul = this.skills.map(skill => ({ text: skill }));
+
     const pdfDocGenerator = pdfMake.createPdf(this.pdfDefinition);
-    pdfDocGenerator.download('my-cv.pdf');
+    pdfDocGenerator.download(`CV-${userName.replace(" ", "-")}.pdf`);
   }
 
   sendData() {
@@ -193,16 +258,21 @@ export class CVBuilderComponent implements OnInit {
   }
 
   async handleSearchChange() {
+    this.loading = false;
+
     if (this.searchQuery !== "") {
-      console.log("Search change", this.searchQuery);
+
+      this.loading = true;
       const skillRes = await this.cvService.getSkills(this.searchQuery);
+
       if (skillRes.length > 0) {
         this.skillsRes = [...skillRes];
-
-        setTimeout(() => {
-          this.skillsSelect.selected = true;
-        }, 0);
+        this.skillsSelect.selected = true;
+        this.loading = false;
+      } else {
+        this.loading = false;
       }
+
     }
   }
 
