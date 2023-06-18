@@ -200,7 +200,7 @@ export class CVBuilderComponent implements OnInit {
       const cvSection = document.getElementById('cv-section');
       window.scrollTo({ top: cvSection.offsetTop, behavior: 'smooth' });
 
-    }, 2000);
+    }, 500);
   }
 
   downloadPdf() {
