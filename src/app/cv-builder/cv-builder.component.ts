@@ -3,7 +3,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CvService } from './cv.service';
 import { Subject, debounceTime } from 'rxjs';
 
@@ -20,6 +20,7 @@ export interface CVFormData {
 }
 
 export interface EducationItem {
+  id: string;
   institute: string;
   degree: string;
   dateStart: Date;
@@ -27,6 +28,7 @@ export interface EducationItem {
 }
 
 export interface ExperienceItem {
+  id: string;
   company: string;
   charge: string;
   description: string;
@@ -45,6 +47,9 @@ export class CVBuilderComponent implements OnInit {
   @ViewChild('skillsSelect') skillsSelect: any;
 
   cvForm: FormGroup;
+  eduForm: FormGroup;
+
+  editEduMode: boolean = false;
 
   userName: string = "";
 
@@ -65,6 +70,7 @@ export class CVBuilderComponent implements OnInit {
 
   education: EducationItem[] = [
     {
+      id: crypto.randomUUID(),
       institute: "Universidad de Caldas",
       degree: "Software development diplomat",
       dateStart: new Date('2021-01-01'),
@@ -74,6 +80,7 @@ export class CVBuilderComponent implements OnInit {
 
   experience: ExperienceItem[] = [
     {
+      id: crypto.randomUUID(),
       company: "IBM",
       charge: "Solutions Architech",
       description: "Improving and creating new solutions",
@@ -101,16 +108,29 @@ export class CVBuilderComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private cvService: CvService,
     private formBuilder: FormBuilder) {
-    this.cvForm = this.formBuilder.group({
-      name: ['Esteban Toro Aristizabal', Validators.required],
-      email: ['estebantoro.greenman@gmail.com', [Validators.required, Validators.email]],
-      phone: ['+57 3107905771', Validators.required],
-      headline: ['Fullstack Junior Developer', Validators.required],
-      profile: ['Software developer with web fullstack development and RPA automations', Validators.required],
-      education: this.formBuilder.array([]),
-      experience: this.formBuilder.array([])
+    this.cvForm = new FormGroup({
+      name: new FormControl(['Esteban Toro Aristizabal', Validators.required]),
+      email: new FormControl(['estebantoro.greenman@gmail.com', [Validators.required, Validators.email]]),
+      phone: new FormControl(['+57 3107905771', Validators.required]),
+      headline: new FormControl(['Fullstack Junior Developer', Validators.required]),
+      profile: new FormControl(['Software developer with web fullstack development and RPA automations', Validators.required])
+    });
+    this.eduForm = new FormGroup({
+      id: new FormControl(''),
+      degree: new FormControl(null, Validators.required),
+      institute: new FormControl('', Validators.required),
+      dateStart: new FormControl('', [Validators.required, this.dateValidator]),
+      dateEnd: new FormControl('', [Validators.required, this.dateValidator])
     });
     this.initializePdfDefinition();
+  }
+
+  dateValidator(control: FormControl) {
+    const enteredDate = control.value;
+    if (!enteredDate || isNaN(Date.parse(enteredDate))) {
+      return { invalidDate: true };
+    }
+    return null;
   }
 
   initializePdfDefinition() {
@@ -244,24 +264,56 @@ export class CVBuilderComponent implements OnInit {
     pdfDocGenerator.download(`CV-${this.userName.replace(" ", "-")}.pdf`);
   }
 
-  sendData() {
-    console.log("Form DATA");
-    const formData: CVFormData = this.cvForm.value;
-    console.log(formData);
-    // if (this.cvForm.valid) {
-    //   const formData: CVFormData = this.cvForm.value;
-    //   console.log(formData);
-    //   // You can now use the formData to send the data to the server or perform any other operations
-    // } else {
-    //   // Handle form validation errors if needed
-    //   console.log('Form is not valid');
-    // }
+  addEducation({ valid, value: { degree, institute, dateStart, dateEnd } }: FormGroup) {
+    if (!valid) {
+      this.showMessageAlert("Some values are missing", 2);
+    } else {
+      const educationData = {
+        id: crypto.randomUUID(),
+        degree,
+        institute,
+        dateStart,
+        dateEnd,
+      };
+      this.education.push(educationData);
+      this.eduForm.reset();
+    }
   }
 
-  addEducation() { }
+  tiggerEditEducation(item: EducationItem) {
+    this.eduForm.patchValue(item);
+    this.editEduMode = true;
+  }
+
+  editEducation({ valid, value: { id, degree, institute, dateStart, dateEnd } }: FormGroup) {
+    if (!valid) {
+      this.showMessageAlert("Some values are missing", 2);
+    } else {
+      const editedEducationItem: EducationItem = {
+        id,
+        degree,
+        institute,
+        dateStart,
+        dateEnd,
+      };
+
+      // Update the selected education item with the edited values
+      const selectedIndex = this.education.findIndex(item => item.id === this.eduForm.value.id);
+      if (selectedIndex !== -1) {
+        this.education[selectedIndex] = editedEducationItem;
+      }
+
+      this.eduForm.reset();
+      this.editEduMode = false;
+    }
+  }
+
+  cancelEditEdu() {
+    this.editEduMode = false
+  }
+
   addExperience() { }
 
-  editEducation(item: EducationItem) { }
   editExperience(item: ExperienceItem) { }
 
   addSkill() {

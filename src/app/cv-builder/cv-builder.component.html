@@ -39,12 +39,6 @@
                 >
                   Download pdf
                 </button>
-                <button
-                  class="btn btn-primary d-none d-sm-block"
-                  (click)="sendData()"
-                >
-                  Send data
-                </button>
                 <div class="d-sm-none">
                   <!-- Icons for small screens -->
                   <button class="btn btn-primary mt-4 mr-2" (click)="viewPdf()">
@@ -55,9 +49,6 @@
                     (click)="downloadPdf()"
                   >
                     <i class="fas fa-download"></i>
-                  </button>
-                  <button class="btn btn-primary mt-4" (click)="sendData()">
-                    <i class="fas fa-paper-plane"></i>
                   </button>
                 </div>
               </div>
@@ -85,7 +76,6 @@
         <form [formGroup]="cvForm">
           <div class="row">
             <div class="form-group col-sm-12 col-md-4">
-              <!-- Adjusted column size to occupy 12 columns on small screens -->
               <label for="name">Name</label>
               <input
                 formControlName="name"
@@ -97,14 +87,16 @@
               <div
                 *ngIf="cvForm.get('name').invalid && cvForm.get('name').touched"
               >
-                <div *ngIf="cvForm.get('name').hasError('required')">
+                <div
+                  class="required-field"
+                  *ngIf="cvForm.get('name').hasError('required')"
+                >
                   Name is required
                 </div>
               </div>
             </div>
 
             <div class="form-group col-sm-12 col-md-4">
-              <!-- Adjusted column size to occupy 12 columns on small screens -->
               <label for="email">Email</label>
               <input
                 formControlName="email"
@@ -118,14 +110,16 @@
                   cvForm.get('email').invalid && cvForm.get('email').touched
                 "
               >
-                <div *ngIf="cvForm.get('email').hasError('required')">
+                <div
+                  class="required-field"
+                  *ngIf="cvForm.get('email').hasError('required')"
+                >
                   Email is required
                 </div>
               </div>
             </div>
 
             <div class="form-group col-sm-12 col-md-4">
-              <!-- Adjusted column size to occupy 12 columns on small screens -->
               <label for="phone">Phone</label>
               <input
                 formControlName="phone"
@@ -139,7 +133,10 @@
                   cvForm.get('phone').invalid && cvForm.get('phone').touched
                 "
               >
-                <div *ngIf="cvForm.get('phone').hasError('required')">
+                <div
+                  class="required-field"
+                  *ngIf="cvForm.get('phone').hasError('required')"
+                >
                   Phone is required
                 </div>
               </div>
@@ -147,7 +144,6 @@
           </div>
           <div class="row">
             <div class="form-group col-sm-12 col-md-6">
-              <!-- Adjusted column size to occupy 12 columns on small screens -->
               <label for="headline">Headline</label>
               <input
                 formControlName="headline"
@@ -162,14 +158,16 @@
                   cvForm.get('headline').touched
                 "
               >
-                <div *ngIf="cvForm.get('headline').hasError('required')">
+                <div
+                  class="required-field"
+                  *ngIf="cvForm.get('headline').hasError('required')"
+                >
                   Headline is required
                 </div>
               </div>
             </div>
 
             <div class="form-group col-sm-12 col-md-6">
-              <!-- Adjusted column size to occupy 12 columns on small screens -->
               <label for="profile">Profile</label>
               <input
                 formControlName="profile"
@@ -183,7 +181,10 @@
                   cvForm.get('profile').invalid && cvForm.get('profile').touched
                 "
               >
-                <div *ngIf="cvForm.get('profile').hasError('required')">
+                <div
+                  class="required-field"
+                  *ngIf="cvForm.get('profile').hasError('required')"
+                >
                   Profile is required
                 </div>
               </div>
@@ -193,6 +194,8 @@
       </div>
 
       <hr class="hr" />
+
+      <!-- Skills -->
 
       <div class="row" style="margin-bottom: 24px">
         <div class="col-lg-2">
@@ -270,7 +273,10 @@
                 <p class="card-text">
                   {{ item.dateStart }} - {{ item.dateEnd }}
                 </p>
-                <button class="btn btn-primary" (click)="editEducation(item)">
+                <button
+                  class="btn btn-primary"
+                  (click)="tiggerEditEducation(item)"
+                >
                   Edit
                 </button>
               </div>
@@ -278,56 +284,137 @@
           </div>
         </div>
 
-        <div class="add-form">
+        <form [formGroup]="eduForm" class="add-form">
           <div class="row">
             <div class="form-group col-sm-12 col-md-6">
-              <label for="company">Degreee</label>
+              <label for="degree">Degree</label>
               <input
                 type="text"
+                formControlName="degree"
                 class="form-control"
                 id="degree"
                 placeholder="Enter your degree"
               />
+              <div
+                *ngIf="
+                  eduForm.get('degree').invalid && eduForm.get('degree').touched
+                "
+              >
+                <div
+                  class="required-field"
+                  *ngIf="eduForm.get('degree').hasError('required')"
+                >
+                  Degree is required
+                </div>
+              </div>
             </div>
             <div class="form-group col-sm-12 col-md-6">
-              <label for="name">Institution</label>
+              <label for="institute">Institute</label>
               <input
                 type="text"
+                formControlName="institute"
                 class="form-control"
-                id="institution"
-                placeholder="Enter your institution"
+                id="institute"
+                placeholder="Enter your institute"
               />
-              <!-- <div *ngIf="cvForm.get('name').invalid && cvForm.get('name').touched">
-              <div *ngIf="cvForm.get('name').hasError('required')">
-                Name is required
+              <div
+                *ngIf="
+                  eduForm.get('institute').invalid &&
+                  eduForm.get('institute').touched
+                "
+              >
+                <div
+                  class="required-field"
+                  *ngIf="eduForm.get('institute').hasError('required')"
+                >
+                  Institute is required
+                </div>
               </div>
-            </div> -->
             </div>
           </div>
           <div class="row">
             <div class="form-group col-sm-12 col-md-4">
               <label for="datepicker">Start date</label>
               <div class="input-group">
-                <input type="date" id="datepicker" class="form-control" />
+                <input
+                  type="date"
+                  formControlName="dateStart"
+                  id="datepicker"
+                  class="form-control"
+                />
+                <div
+                  *ngIf="
+                    eduForm.get('dateStart').invalid &&
+                    eduForm.get('dateStart').touched
+                  "
+                >
+                  <div
+                    class="required-field"
+                    *ngIf="eduForm.get('dateStart').hasError('required')"
+                  >
+                    Start date is required
+                  </div>
+                </div>
               </div>
             </div>
             <div class="form-group col-sm-12 col-md-4">
               <label for="datepicker">End date</label>
               <div class="input-group">
-                <input type="date" id="datepicker" class="form-control" />
+                <input
+                  type="date"
+                  formControlName="dateEnd"
+                  id="datepicker"
+                  class="form-control"
+                />
+                <div
+                  *ngIf="
+                    eduForm.get('dateEnd').invalid &&
+                    eduForm.get('dateEnd').touched
+                  "
+                >
+                  <div
+                    class="required-field"
+                    *ngIf="eduForm.get('dateEnd').hasError('required')"
+                  >
+                    End date is required
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-sm-12 col-md-4">
               <button
+                *ngIf="!editEduMode"
                 type="button"
+                [disabled]="eduForm.invalid"
+                (click)="addEducation(eduForm)"
                 style="margin-top: 32px"
                 class="btn btn-primary"
               >
                 <i class="fas fa-plus"></i> Add
               </button>
+              <button
+                *ngIf="editEduMode"
+                type="button"
+                [disabled]="eduForm.invalid"
+                (click)="editEducation(eduForm)"
+                style="margin-top: 32px"
+                class="btn btn-primary mr-2"
+              >
+                <i class="fas fa-plus"></i> Save
+              </button>
+              <button
+                *ngIf="editEduMode"
+                type="button"
+                [disabled]="eduForm.invalid"
+                (click)="cancelEditEdu()"
+                style="margin-top: 32px"
+                class="btn btn-danger"
+              >
+                <i class="fas fa-plus"></i> Cancel
+              </button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
 
       <hr class="hr" />
