@@ -70,7 +70,7 @@
       <!-- Personal info -->
       <div style="margin-bottom: 24px">
         <div style="display: flex; justify-content: space-between">
-          <h4 class="mb-3 font-weight-bold">Personal Info</h4>
+          <h4 class="mb-3 font-weight-bold bg-primary-subtle">Personal Info</h4>
         </div>
 
         <form [formGroup]="cvForm">
@@ -197,62 +197,77 @@
 
       <!-- Skills -->
 
-      <div class="row" style="margin-bottom: 24px">
-        <div class="col-lg-2">
-          <h4 class="mb-3 font-weight-bold">Skills</h4>
-        </div>
-        <div class="col-lg-10 input-group" style="height: 100%; gap: 10px">
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="searchQuery"
-            (input)="handleSearchChange()"
-            placeholder="Search a skill"
-            id="searchInput"
-          />
-          <div *ngIf="showSpinner" class="spinner-border" role="status">
-            <span class="sr-only"></span>
+      <div style="margin-bottom: 24px">
+        <div class="row">
+          <div class="col-lg-2 col-sm-12">
+            <h4 class="mb-3 font-weight-bold bg-primary-subtle">Skills</h4>
           </div>
-          <select
-            #skillsSelect
-            class="custom-select"
-            id="inputGroupSelect04"
-            [disabled]="showSpinner"
-            [(ngModel)]="selectedSkill"
+          <div
+            class="col-lg-10 col-sm-12 input-group"
+            style="height: 100%; gap: 10px"
           >
-            <option selected>Choose a skill</option>
-            <option *ngFor="let skill of skillsRes" [value]="skill">
-              {{ skill }}
-            </option>
-          </select>
-          <button
-            (click)="addSkill()"
-            type="button"
-            [disabled]="selectedSkill === ''"
-            class="btn btn-primary"
-          >
-            <i class="fas fa-plus"></i> Add
-          </button>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="searchQuery"
+              (input)="handleSearchChange()"
+              placeholder="Search a skill"
+              id="searchInput"
+            />
+            <div *ngIf="showSpinner" class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+            <select
+              #skillsSelect
+              class="custom-select"
+              id="inputGroupSelect04"
+              [disabled]="showSpinner"
+              [(ngModel)]="selectedSkill"
+            >
+              <option selected>Choose a skill</option>
+              <option *ngFor="let skill of skillsRes" [value]="skill">
+                {{ skill }}
+              </option>
+            </select>
+            <button
+              (click)="addSkill()"
+              type="button"
+              [disabled]="selectedSkill === ''"
+              class="btn btn-primary"
+            >
+              <i class="fas fa-plus"></i> Add Skill
+            </button>
+          </div>
         </div>
 
-        <div class="row" style="margin-top: 25px">
-          <div class="col">
-            <div class="d-flex flex-wrap">
-              <ng-container *ngFor="let item of skills">
-                <span
-                  style="font-size: 100%; margin: 5px 5px 0 0; padding: 15px"
-                  class="badge badge-pill badge-primary"
-                  >{{ item }}
-                  <i
-                    style="cursor: pointer"
-                    class="fas fa-times"
-                    (click)="deleteSkill(item)"
-                  ></i>
-                </span>
-              </ng-container>
+        <ng-container *ngIf="skills.length > 0; else noDataSkills">
+          <div class="row" style="margin-top: 25px">
+            <div class="col">
+              <div class="d-flex flex-wrap">
+                <ng-container *ngFor="let item of skills">
+                  <span
+                    style="font-size: 100%; margin: 5px 5px 0 0; padding: 15px"
+                    class="badge badge-pill badge-primary"
+                    >{{ item }}
+                    <i
+                      style="cursor: pointer"
+                      class="fas fa-times"
+                      (click)="deleteSkill(item)"
+                    ></i>
+                  </span>
+                </ng-container>
+              </div>
             </div>
           </div>
-        </div>
+        </ng-container>
+
+        <ng-template #noDataSkills>
+          <div class="col-lg-12 col-md-12 col-sm-6 mb-3">
+            <div class="no-data-container">
+              <p>You haven't add any skill yet.</p>
+            </div>
+          </div>
+        </ng-template>
       </div>
 
       <hr class="hr" />
@@ -260,29 +275,40 @@
       <!-- Education -->
       <div class="row" style="margin-bottom: 24px">
         <div style="display: flex; justify-content: space-between">
-          <h4 class="mb-3 font-weight-bold">Education</h4>
+          <h4 class="mb-3 font-weight-bold bg-primary-subtle">Education</h4>
         </div>
-        <div class="col-lg-4 col-sm-6 education-cards mb-3">
-          <div class="card-group">
-            <div class="card" *ngFor="let item of education">
-              <div class="card-body">
-                <h5 class="card-title">{{ item.degree }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">
-                  {{ item.institute }}
-                </h6>
-                <p class="card-text">
-                  {{ item.dateStart }} - {{ item.dateEnd }}
-                </p>
-                <button
-                  class="btn btn-primary"
-                  (click)="tiggerEditEducation(item)"
-                >
-                  Edit
-                </button>
+
+        <ng-container *ngIf="education.length > 0; else noDataEdu">
+          <div class="col-lg-4 col-sm-6 education-cards mb-3">
+            <div class="card-group">
+              <div class="card" *ngFor="let item of education">
+                <div class="card-body">
+                  <h5 class="card-title">{{ item.degree }}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">
+                    {{ item.institute }}
+                  </h6>
+                  <p class="card-text">
+                    {{ item.dateStart }} - {{ item.dateEnd }}
+                  </p>
+                  <button
+                    class="btn btn-primary"
+                    (click)="triggerEditEducation(item)"
+                  >
+                    Edit
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </ng-container>
+
+        <ng-template #noDataEdu>
+          <div class="col-lg-12 col-md-12 col-sm-6 education-cards mb-3">
+            <div class="no-data-container">
+              <p>You haven't add any education yet.</p>
+            </div>
+          </div>
+        </ng-template>
 
         <form [formGroup]="eduForm" class="add-form">
           <div class="row">
@@ -381,23 +407,26 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-12 col-md-4">
+            <div
+              class="col-sm-12 col-md-4"
+              style="display: flex; justify-content: flex-end"
+            >
               <button
                 *ngIf="!editEduMode"
                 type="button"
                 [disabled]="eduForm.invalid"
                 (click)="addEducation(eduForm)"
-                style="margin-top: 32px"
+                style="margin: 32px 0"
                 class="btn btn-primary"
               >
-                <i class="fas fa-plus"></i> Add
+                <i class="fas fa-plus"></i> Add education
               </button>
               <button
                 *ngIf="editEduMode"
                 type="button"
                 [disabled]="eduForm.invalid"
                 (click)="editEducation(eduForm)"
-                style="margin-top: 32px"
+                style="margin: 32px 0"
                 class="btn btn-primary mr-2"
               >
                 <i class="fas fa-plus"></i> Save
@@ -407,7 +436,7 @@
                 type="button"
                 [disabled]="eduForm.invalid"
                 (click)="cancelEditEdu()"
-                style="margin-top: 32px"
+                style="margin: 32px 0"
                 class="btn btn-danger"
               >
                 <i class="fas fa-plus"></i> Cancel
@@ -422,68 +451,139 @@
       <!-- Experience -->
       <div class="row" style="margin-bottom: 24px">
         <div style="display: flex; justify-content: space-between">
-          <h4 class="mb-3 font-weight-bold">Experience</h4>
+          <h4 class="mb-3 font-weight-bold bg-primary-subtle">Experience</h4>
         </div>
-        <div class="col-lg-4 col-sm-6 mb-3">
-          <div class="card-group">
-            <div class="card" *ngFor="let item of experience">
-              <div class="card-body">
-                <h5 class="card-title">{{ item.company }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">
-                  {{ item.charge }}
-                </h6>
-                <p class="card-text">
-                  {{ item.dateStart }} - {{ item.dateEnd }}
-                </p>
-                <p class="card-text">{{ item.description }}</p>
-                <ul>
-                  <li *ngFor="let function of item.functions">
-                    {{ function }}
-                  </li>
-                </ul>
-                <button class="btn btn-primary" (click)="editExperience(item)">
-                  Edit
-                </button>
+
+        <ng-container *ngIf="experience.length > 0; else noDataExp">
+          <div class="col-lg-4 col-sm-6 mb-3">
+            <div class="card-group">
+              <div class="card" *ngFor="let item of experience">
+                <div class="card-body">
+                  <h5 class="card-title">{{ item.company }}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">
+                    {{ item.charge }}
+                  </h6>
+                  <p class="card-text">
+                    {{ item.dateStart }} - {{ item.dateEnd }}
+                  </p>
+                  <p class="card-text">{{ item.description }}</p>
+                  <ul>
+                    <li *ngFor="let func of item.functions">{{ func }}</li>
+                  </ul>
+                  <button
+                    class="btn btn-primary"
+                    (click)="triggerEditExperience(item)"
+                  >
+                    Edit
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="add-form">
+        </ng-container>
+
+        <ng-template #noDataExp>
+          <div class="col-lg-12 col-md-12 col-sm-6 education-cards mb-3">
+            <div class="no-data-container">
+              <p>You haven't add any experience yet.</p>
+            </div>
+          </div>
+        </ng-template>
+
+        <div [formGroup]="expForm" class="add-form">
           <div class="row">
             <div class="form-group col-sm-12 col-md-6">
               <label for="company">Company</label>
               <input
+                formControlName="company"
                 type="text"
                 class="form-control"
                 id="company"
-                placeholder="Enter your company"
+                placeholder="Enter the company"
               />
             </div>
             <div class="form-group col-sm-12 col-md-6">
-              <label for="position">Position</label>
+              <label for="charge">Charge</label>
               <input
+                formControlName="charge"
                 type="text"
                 class="form-control"
-                id="position"
-                placeholder="Enter your position"
+                id="charge"
+                placeholder="Enter your charge"
               />
             </div>
           </div>
+
+          <div class="row">
+            <div class="form-group col-sm-12 col-md-12">
+              <label for="description">Description</label>
+              <input
+                formControlName="description"
+                type="text"
+                class="form-control"
+                id="description"
+                placeholder="Enter the description"
+              />
+            </div>
+          </div>
+
           <div class="row">
             <div class="form-group col-sm-12 col-md-4">
-              <label for="datepicker">Date</label>
+              <label for="datepicker">Start date</label>
               <div class="input-group">
-                <input type="date" id="datepicker" class="form-control" />
+                <input
+                  formControlName="dateStart"
+                  type="date"
+                  id="datepicker"
+                  class="form-control"
+                />
               </div>
             </div>
             <div class="form-group col-sm-12 col-md-4">
-              <label for="datepicker">Date</label>
+              <label for="datepicker">End date</label>
               <div class="input-group">
-                <input type="date" id="datepicker" class="form-control" />
+                <input
+                  formControlName="dateEnd"
+                  type="date"
+                  id="datepicker"
+                  class="form-control"
+                />
               </div>
             </div>
-            <div class="col-sm-12 col-md-4">
+          </div>
+
+          <div class="row">
+            <div class="form-group col-sm-12 col-md-6">
+              <label for="function">Responsibilities</label>
+              <ng-container formArrayName="functions">
+                <div
+                  *ngFor="let funct of functions.controls; let i = index"
+                  [formGroupName]="i"
+                >
+                  <div
+                    class="mb-2"
+                    style="display: flex; display: flex; align-items: center"
+                  >
+                    <input
+                      formControlName="name"
+                      type="text"
+                      class="form-control"
+                      [id]="'name-' + i"
+                      placeholder="Enter your responsability"
+                    />
+                    <div *ngIf="i > 0">
+                      <i
+                        style="padding: 0 15px; cursor: pointer"
+                        class="fas fa-times"
+                        (click)="deleteFunction(i)"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
               <button
+                (click)="addFunction()"
                 type="button"
                 style="margin-top: 32px"
                 class="btn btn-primary"
@@ -492,11 +592,51 @@
               </button>
             </div>
           </div>
+
+          <div class="row">
+            <div
+              class="col-sm-12 col-md-4 offset-md-8"
+              style="display: flex; justify-content: flex-end"
+            >
+              <button
+                *ngIf="!editExpMode"
+                (click)="addExperience(expForm)"
+                [disabled]="expForm.invalid"
+                type="button"
+                style="margin-top: 32px"
+                class="btn btn-primary"
+              >
+                <i class="fas fa-plus"></i> Add experience
+              </button>
+
+              <button
+                *ngIf="editExpMode"
+                type="button"
+                [disabled]="expForm.invalid"
+                (click)="editExperience(expForm)"
+                style="margin: 32px 0"
+                class="btn btn-primary mr-2"
+              >
+                <i class="fas fa-plus"></i> Save
+              </button>
+              <button
+                *ngIf="editExpMode"
+                type="button"
+                [disabled]="expForm.invalid"
+                (click)="cancelEditExp()"
+                style="margin: 32px 0"
+                class="btn btn-danger"
+              >
+                <i class="fas fa-plus"></i> Cancel
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
       <hr class="hr" />
 
+      <!-- PDF Viewer -->
       <div class="mt-4 pdf-viewer">
         <ng-container *ngIf="pdfSrc">
           <h4 id="cv-section" class="mb-3 font-weight-bold">
@@ -507,6 +647,7 @@
       </div>
     </div>
 
+    <!-- Footer -->
     <footer class="footer bg-light text-dark">
       <div class="container">
         <div class="row">

@@ -3,7 +3,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CvService } from './cv.service';
 import { Subject, debounceTime } from 'rxjs';
 
@@ -48,8 +48,13 @@ export class CVBuilderComponent implements OnInit {
 
   cvForm: FormGroup;
   eduForm: FormGroup;
+  expForm: FormGroup;
+
+  functionsList: string[] = ["Create amazing apps with Angular and .NET"];
+  functionInput: string;
 
   editEduMode: boolean = false;
+  editExpMode: boolean = false;
 
   userName: string = "";
 
@@ -69,52 +74,52 @@ export class CVBuilderComponent implements OnInit {
   skillsRes: string[] = [];
 
   education: EducationItem[] = [
-    {
-      id: crypto.randomUUID(),
-      institute: "Universidad de Caldas",
-      degree: "Software development diplomat",
-      dateStart: new Date('2021-01-01'),
-      dateEnd: new Date('2021-01-01')
-    }
+    // {
+    //   id: crypto.randomUUID(),
+    //   institute: "Universidad de Caldas",
+    //   degree: "Software development diplomat",
+    //   dateStart: new Date('2021-01-01'),
+    //   dateEnd: new Date('2021-01-01')
+    // }
   ];
 
   experience: ExperienceItem[] = [
-    {
-      id: crypto.randomUUID(),
-      company: "IBM",
-      charge: "Solutions Architech",
-      description: "Improving and creating new solutions",
-      functions: ["Gathering technical requeriments", "Creating structure models and plans"],
-      dateStart: new Date('2021-01-01'),
-      dateEnd: new Date('2021-01-01')
-    }
+    // {
+    //   id: crypto.randomUUID(),
+    //   company: "IBM",
+    //   charge: "Solutions Architech",
+    //   description: "Improving and creating new solutions",
+    //   functions: ["Gathering technical requeriments", "Creating structure models and plans"],
+    //   dateStart: new Date('2021-01-01'),
+    //   dateEnd: new Date('2021-01-01')
+    // },
+    // {
+    //   id: crypto.randomUUID(),
+    //   company: "IBM 2",
+    //   charge: "Solutions Architech",
+    //   description: "Improving and creating new solutions",
+    //   functions: ["Gathering technical requeriments", "Creating structure models and plans"],
+    //   dateStart: new Date('2021-01-01'),
+    //   dateEnd: new Date('2021-01-01')
+    // },
   ];
 
-  educationContent = this.education.map(item => [
-    { text: item.degree, bold: true, margin: [0, 10] },
-    { text: item.institute, margin: [0, 5] },
-    { text: item.dateStart.getFullYear() + ' - ' + item.dateEnd.getFullYear(), margin: [0, 5] },
-  ]);
+  educationContent = [];
+  experienceContent = [];
 
-  experienceContent = this.experience.map(item => [
-    { text: item.company, bold: true, margin: [0, 10] },
-    { text: 'Position: ' + item.charge, margin: [0, 5] },
-    { text: 'Duration: ' + item.dateStart.getFullYear() + ' - ' + item.dateEnd.getFullYear(), margin: [0, 5] },
-    { text: 'Responsibilities:', margin: [0, 10] },
-    { ul: item.functions.map(func => ({ text: func })), margin: [20, 0] },
-  ]);
 
   constructor(
     private sanitizer: DomSanitizer,
-    private cvService: CvService,
-    private formBuilder: FormBuilder) {
+    private cvService: CvService) {
+
     this.cvForm = new FormGroup({
-      name: new FormControl(['Esteban Toro Aristizabal', Validators.required]),
-      email: new FormControl(['estebantoro.greenman@gmail.com', [Validators.required, Validators.email]]),
-      phone: new FormControl(['+57 3107905771', Validators.required]),
-      headline: new FormControl(['Fullstack Junior Developer', Validators.required]),
-      profile: new FormControl(['Software developer with web fullstack development and RPA automations', Validators.required])
+      name: new FormControl('Esteban Toro Aristizabal', Validators.required),
+      email: new FormControl('estebantoro.greenman@gmail.com', [Validators.required, Validators.email]),
+      phone: new FormControl('+57 3107905771', Validators.required),
+      headline: new FormControl('Fullstack Junior Developer', Validators.required),
+      profile: new FormControl('Software developer with web fullstack development and RPA automations', Validators.required)
     });
+
     this.eduForm = new FormGroup({
       id: new FormControl(''),
       degree: new FormControl(null, Validators.required),
@@ -122,7 +127,28 @@ export class CVBuilderComponent implements OnInit {
       dateStart: new FormControl('', [Validators.required, this.dateValidator]),
       dateEnd: new FormControl('', [Validators.required, this.dateValidator])
     });
-    this.initializePdfDefinition();
+
+    this.expForm = new FormGroup({
+      id: new FormControl(''),
+      company: new FormControl('', Validators.required),
+      charge: new FormControl('', Validators.required),
+      description: new FormControl('', Validators.required),
+      functions: new FormArray([
+        new FormGroup({
+          name: new FormControl('', Validators.required)
+        })
+      ]),
+      dateStart: new FormControl('', [Validators.required, this.dateValidator]),
+      dateEnd: new FormControl('', [Validators.required, this.dateValidator])
+    });
+
+  }
+
+
+  ngOnInit() {
+    // Initialize educationContent and experienceContent arrays
+    this.initializeEducationContent();
+    this.initializeExperienceContent();
   }
 
   dateValidator(control: FormControl) {
@@ -168,11 +194,28 @@ export class CVBuilderComponent implements OnInit {
     };
   }
 
-  ngOnInit() { }
+  // Function to initialize educationContent based on education array
+  initializeEducationContent() {
+    this.educationContent = this.education.map(item => [
+      { text: item.degree, bold: true, margin: [0, 10] },
+      { text: item.institute, margin: [0, 5] },
+      { text: new Date(item.dateStart).getFullYear() + ' - ' + new Date(item.dateEnd).getFullYear(), margin: [0, 5] },
+    ]);
+  }
+
+  // Function to initialize experienceContent based on experience array
+  initializeExperienceContent() {
+    this.experienceContent = this.experience.map(item => [
+      { text: item.company, bold: true, margin: [0, 10] },
+      { text: 'Position: ' + item.charge, margin: [0, 5] },
+      { text: 'Duration: ' + new Date(item.dateStart).getFullYear() + ' - ' + new Date(item.dateEnd).getFullYear(), margin: [0, 5] },
+      { text: 'Responsibilities:', margin: [0, 10] },
+      { ul: item.functions.map(func => ({ text: func })), margin: [20, 0] },
+    ])
+  }
 
   viewPdf() {
     this.userName = this.cvForm.value.name || '';
-
     this.pdfDefinition = {
       content: [
         {
@@ -264,6 +307,9 @@ export class CVBuilderComponent implements OnInit {
     pdfDocGenerator.download(`CV-${this.userName.replace(" ", "-")}.pdf`);
   }
 
+
+
+
   addEducation({ valid, value: { degree, institute, dateStart, dateEnd } }: FormGroup) {
     if (!valid) {
       this.showMessageAlert("Some values are missing", 2);
@@ -277,10 +323,11 @@ export class CVBuilderComponent implements OnInit {
       };
       this.education.push(educationData);
       this.eduForm.reset();
+      this.initializeEducationContent();
     }
   }
 
-  tiggerEditEducation(item: EducationItem) {
+  triggerEditEducation(item: EducationItem) {
     this.eduForm.patchValue(item);
     this.editEduMode = true;
   }
@@ -309,12 +356,133 @@ export class CVBuilderComponent implements OnInit {
   }
 
   cancelEditEdu() {
-    this.editEduMode = false
+    this.editEduMode = false;
+    this.eduForm.reset();
   }
 
-  addExperience() { }
 
-  editExperience(item: ExperienceItem) { }
+
+
+
+
+
+
+  get functions(): FormArray {
+    return this.expForm.get('functions') as FormArray;
+  }
+
+  addFunction() {
+    const funct = new FormGroup({
+      name: new FormControl('', Validators.required)
+    });
+    this.functions.push(funct);
+  }
+
+  deleteFunction(index: number) {
+    this.functions.removeAt(index);
+  }
+
+
+
+
+
+
+
+  addExperience({ valid, value: { charge, description, company, dateStart, dateEnd } }: FormGroup) {
+    if (!valid) {
+      this.showMessageAlert("Some values are missing", 2);
+    } else {
+
+      const funcList = this.formatList(this.functions.value);
+
+      const experienceData = {
+        id: crypto.randomUUID(),
+        charge,
+        company,
+        description,
+        dateStart,
+        dateEnd,
+        functions: funcList
+      };
+      this.experience.push(experienceData);
+
+
+      //Restore inputs
+      this.expForm.reset();
+      this.functions.clear();
+      this.addFunction();
+
+      this.initializeExperienceContent();
+    }
+  }
+
+  formatList(list: [{ name: string }]) {
+    if (!(list.length > 0)) {
+      return [];
+    }
+    return list.map((obj) => obj.name);
+  }
+
+
+  triggerEditExperience(item: ExperienceItem) {
+    this.expForm.patchValue(item);
+
+    // Clear existing functions form array
+    const functionsArray = this.expForm.get('functions') as FormArray;
+    while (functionsArray.length > 0) {
+      functionsArray.removeAt(0);
+    }
+
+    // Add form controls for each function in item.functions
+    item.functions.forEach((func: string) => {
+      functionsArray.push(
+        new FormGroup({
+          name: new FormControl(func, Validators.required)
+        })
+      );
+    });
+
+    this.editExpMode = true;
+  }
+
+  editExperience({ valid, value: { id, company, charge, description, dateStart, dateEnd } }: FormGroup) {
+    if (!valid) {
+      this.showMessageAlert("Some values are missing", 2);
+    } else {
+      const funcList = this.formatList(this.functions.value);
+
+      const editedExperienceItem: ExperienceItem = {
+        id,
+        company,
+        charge,
+        description,
+        dateStart,
+        dateEnd,
+        functions: funcList
+      };
+
+      // Update the selected experience item with the edited values
+      const selectedIndex = this.experience.findIndex(item => item.id === this.expForm.value.id);
+      if (selectedIndex !== -1) {
+        this.experience[selectedIndex] = editedExperienceItem;
+      }
+
+      this.expForm.reset();
+      this.editExpMode = false;
+    }
+  }
+
+  cancelEditExp() {
+    this.editExpMode = false;
+    this.expForm.reset();
+  }
+
+
+
+
+
+
+
 
   addSkill() {
     const contains = this.skills.includes(this.selectedSkill || "");
@@ -332,7 +500,6 @@ export class CVBuilderComponent implements OnInit {
       this.skills.splice(index, 1);
     }
   }
-
 
   handleSearchChange() {
     this.showSpinner = true;
@@ -362,6 +529,11 @@ export class CVBuilderComponent implements OnInit {
   }
 
 
+
+
+
+
+
   async showMessageAlert(message: string, delay: number) {
     this.alertMessage = message;
     this.showAlert = true;
@@ -371,6 +543,9 @@ export class CVBuilderComponent implements OnInit {
       this.showAlert = false;
     }, delay * 1000);
   }
+
+
+
 
 
 }
