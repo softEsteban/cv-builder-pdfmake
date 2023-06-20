@@ -70,7 +70,8 @@ export class CVBuilderComponent implements OnInit {
   searchQuery$: Subject<string> = new Subject<string>();
 
   showSpinner: boolean = false;
-  skills: string[] = ['Nodejs', 'Angular', 'Nestjs', 'Vuejs', 'PostgreSQL', 'SQL Server', 'MySQL', 'MongoDB'];
+  // skills: string[] = ['Nodejs', 'Angular', 'Nestjs', 'Vuejs', 'PostgreSQL', 'SQL Server', 'MySQL', 'MongoDB'];
+  skills: string[] = [];
   skillsRes: string[] = [];
 
   education: EducationItem[] = [
@@ -113,11 +114,11 @@ export class CVBuilderComponent implements OnInit {
     private cvService: CvService) {
 
     this.cvForm = new FormGroup({
-      name: new FormControl('Esteban Toro Aristizabal', Validators.required),
-      email: new FormControl('estebantoro.greenman@gmail.com', [Validators.required, Validators.email]),
-      phone: new FormControl('+57 3107905771', Validators.required),
-      headline: new FormControl('Fullstack Junior Developer', Validators.required),
-      profile: new FormControl('Software developer with web fullstack development and RPA automations', Validators.required)
+      name: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      phone: new FormControl('', Validators.required),
+      headline: new FormControl('', Validators.required),
+      profile: new FormControl('', Validators.required)
     });
 
     this.eduForm = new FormGroup({
