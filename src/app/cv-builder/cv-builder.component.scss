@@ -22,3 +22,35 @@
   justify-content: center;
   align-items: center;
 }
+
+.cards-container {
+  overflow-x: auto;
+  white-space: nowrap;
+  margin-bottom: 15px;
+
+  .card {
+    display: inline-block;
+    width: 350px;
+    height: 300px;
+  }
+
+  .card-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-subtitle,
+  .card-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

@@ -25,6 +25,7 @@ export interface EducationItem {
   degree: string;
   dateStart: Date;
   dateEnd: Date;
+  current: boolean;
 }
 
 export interface ExperienceItem {
@@ -35,6 +36,7 @@ export interface ExperienceItem {
   functions: string[];
   dateStart: Date;
   dateEnd: Date;
+  current: boolean;
 }
 
 @Component({
@@ -55,6 +57,9 @@ export class CVBuilderComponent implements OnInit {
 
   editEduMode: boolean = false;
   editExpMode: boolean = false;
+
+  isCheckedCurrentEdu: boolean = false;
+  isCheckedCurrentExp: boolean = false;
 
   userName: string = "";
 
@@ -80,8 +85,33 @@ export class CVBuilderComponent implements OnInit {
     //   institute: "Universidad de Caldas",
     //   degree: "Software development diplomat",
     //   dateStart: new Date('2021-01-01'),
-    //   dateEnd: new Date('2021-01-01')
-    // }
+    //   dateEnd: null,
+    //   current: true
+    // },
+    // {
+    //   id: crypto.randomUUID(),
+    //   institute: "Universidad de Caldas",
+    //   degree: "Software development diplomat",
+    //   dateStart: new Date('2021-01-01'),
+    //   dateEnd: new Date('2021-01-01'),
+    //   current: false
+    // },
+    // {
+    //   id: crypto.randomUUID(),
+    //   institute: "Universidad de Caldas",
+    //   degree: "Software development diplomat",
+    //   dateStart: new Date('2021-01-01'),
+    //   dateEnd: new Date('2021-01-01'),
+    //   current: false
+    // },
+    // {
+    //   id: crypto.randomUUID(),
+    //   institute: "Universidad de Caldas",
+    //   degree: "Software development diplomat",
+    //   dateStart: new Date('2021-01-01'),
+    //   dateEnd: new Date('2021-01-01'),
+    //   current: false
+    // },
   ];
 
   experience: ExperienceItem[] = [
@@ -126,7 +156,8 @@ export class CVBuilderComponent implements OnInit {
       degree: new FormControl(null, Validators.required),
       institute: new FormControl('', Validators.required),
       dateStart: new FormControl('', [Validators.required, this.dateValidator]),
-      dateEnd: new FormControl('', [Validators.required, this.dateValidator])
+      dateEnd: new FormControl('', []),
+      current: new FormControl({ value: '', disabled: false })
     });
 
     this.expForm = new FormGroup({
@@ -140,7 +171,8 @@ export class CVBuilderComponent implements OnInit {
         })
       ]),
       dateStart: new FormControl('', [Validators.required, this.dateValidator]),
-      dateEnd: new FormControl('', [Validators.required, this.dateValidator])
+      dateEnd: new FormControl('', []),
+      current: new FormControl({ value: '', disabled: false })
     });
 
   }
@@ -311,7 +343,7 @@ export class CVBuilderComponent implements OnInit {
 
 
 
-  addEducation({ valid, value: { degree, institute, dateStart, dateEnd } }: FormGroup) {
+  addEducation({ valid, value: { degree, institute, dateStart, dateEnd, current } }: FormGroup) {
     if (!valid) {
       this.showMessageAlert("Some values are missing", 2);
     } else {
@@ -321,6 +353,7 @@ export class CVBuilderComponent implements OnInit {
         institute,
         dateStart,
         dateEnd,
+        current
       };
       this.education.push(educationData);
       this.eduForm.reset();
@@ -331,9 +364,16 @@ export class CVBuilderComponent implements OnInit {
   triggerEditEducation(item: EducationItem) {
     this.eduForm.patchValue(item);
     this.editEduMode = true;
+
+    if (item.current) {
+      this.eduForm.get('dateEnd')?.disable();
+    } else {
+      this.eduForm.get('dateEnd')?.enable();
+    }
+
   }
 
-  editEducation({ valid, value: { id, degree, institute, dateStart, dateEnd } }: FormGroup) {
+  editEducation({ valid, value: { id, degree, institute, dateStart, dateEnd, current } }: FormGroup) {
     if (!valid) {
       this.showMessageAlert("Some values are missing", 2);
     } else {
@@ -343,6 +383,7 @@ export class CVBuilderComponent implements OnInit {
         institute,
         dateStart,
         dateEnd,
+        current
       };
 
       // Update the selected education item with the edited values
@@ -389,7 +430,7 @@ export class CVBuilderComponent implements OnInit {
 
 
 
-  addExperience({ valid, value: { charge, description, company, dateStart, dateEnd } }: FormGroup) {
+  addExperience({ valid, value: { charge, description, company, dateStart, dateEnd, current } }: FormGroup) {
     if (!valid) {
       this.showMessageAlert("Some values are missing", 2);
     } else {
@@ -403,7 +444,8 @@ export class CVBuilderComponent implements OnInit {
         description,
         dateStart,
         dateEnd,
-        functions: funcList
+        functions: funcList,
+        current
       };
       this.experience.push(experienceData);
 
@@ -444,9 +486,15 @@ export class CVBuilderComponent implements OnInit {
     });
 
     this.editExpMode = true;
+
+    if (item.current) {
+      this.expForm.get('dateEnd')?.disable();
+    } else {
+      this.expForm.get('dateEnd')?.enable();
+    }
   }
 
-  editExperience({ valid, value: { id, company, charge, description, dateStart, dateEnd } }: FormGroup) {
+  editExperience({ valid, value: { id, company, charge, description, dateStart, dateEnd, current } }: FormGroup) {
     if (!valid) {
       this.showMessageAlert("Some values are missing", 2);
     } else {
@@ -459,7 +507,8 @@ export class CVBuilderComponent implements OnInit {
         description,
         dateStart,
         dateEnd,
-        functions: funcList
+        functions: funcList,
+        current
       };
 
       // Update the selected experience item with the edited values
@@ -547,6 +596,23 @@ export class CVBuilderComponent implements OnInit {
 
 
 
+  onCheckboxChange(type: string) {
+    if (type == "edu") {
+      this.isCheckedCurrentEdu = this.eduForm.value.current;
+      if (this.isCheckedCurrentEdu) {
+        this.eduForm.get('dateEnd')?.disable();
+      } else {
+        this.eduForm.get('dateEnd')?.enable();
+      }
+    } else {
+      this.isCheckedCurrentExp = this.expForm.value.current;
+      if (this.isCheckedCurrentExp) {
+        this.expForm.get('dateEnd')?.disable();
+      } else {
+        this.expForm.get('dateEnd')?.enable();
+      }
+    }
+  }
 
 
 }

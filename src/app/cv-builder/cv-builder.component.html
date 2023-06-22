@@ -279,24 +279,22 @@
         </div>
 
         <ng-container *ngIf="education.length > 0; else noDataEdu">
-          <div class="col-lg-4 col-sm-6 education-cards mb-3">
-            <div class="card-group">
-              <div class="card" *ngFor="let item of education">
-                <div class="card-body">
-                  <h5 class="card-title">{{ item.degree }}</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">
-                    {{ item.institute }}
-                  </h6>
-                  <p class="card-text">
-                    {{ item.dateStart }} - {{ item.dateEnd }}
-                  </p>
-                  <button
-                    class="btn btn-primary"
-                    (click)="triggerEditEducation(item)"
-                  >
-                    Edit
-                  </button>
-                </div>
+          <div class="cards-container">
+            <div class="card content-item mr-2" *ngFor="let item of education">
+              <div class="card-body">
+                <h5 class="card-title text-muted">{{ item.degree }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                  {{ item.institute }}
+                </h6>
+                <p class="card-text">
+                  {{ item.dateStart }} - {{ item.dateEnd || "Current" }}
+                </p>
+                <button
+                  class="btn btn-primary"
+                  (click)="triggerEditEducation(item)"
+                >
+                  Edit
+                </button>
               </div>
             </div>
           </div>
@@ -368,21 +366,23 @@
                   id="datepicker"
                   class="form-control"
                 />
+              </div>
+
+              <div
+                *ngIf="
+                  eduForm.get('dateStart').invalid &&
+                  eduForm.get('dateStart').touched
+                "
+              >
                 <div
-                  *ngIf="
-                    eduForm.get('dateStart').invalid &&
-                    eduForm.get('dateStart').touched
-                  "
+                  class="required-field"
+                  *ngIf="eduForm.get('dateStart').hasError('required')"
                 >
-                  <div
-                    class="required-field"
-                    *ngIf="eduForm.get('dateStart').hasError('required')"
-                  >
-                    Start date is required
-                  </div>
+                  Start date is required
                 </div>
               </div>
             </div>
+
             <div class="form-group col-sm-12 col-md-4">
               <label for="datepicker">End date</label>
               <div class="input-group">
@@ -392,25 +392,40 @@
                   id="datepicker"
                   class="form-control"
                 />
+              </div>
+
+              <div
+                *ngIf="
+                  eduForm.get('dateEnd').invalid &&
+                  eduForm.get('dateEnd').touched
+                "
+              >
                 <div
-                  *ngIf="
-                    eduForm.get('dateEnd').invalid &&
-                    eduForm.get('dateEnd').touched
-                  "
+                  class="required-field"
+                  *ngIf="eduForm.get('dateEnd').hasError('required')"
                 >
-                  <div
-                    class="required-field"
-                    *ngIf="eduForm.get('dateEnd').hasError('required')"
-                  >
-                    End date is required
-                  </div>
+                  End date is required
                 </div>
               </div>
             </div>
-            <div
-              class="col-sm-12 col-md-4"
-              style="display: flex; justify-content: flex-end"
-            >
+
+            <div class="form-group col-sm-12 col-md-4" style="padding: 35px">
+              <div class="form-check">
+                <input
+                  formControlName="current"
+                  (ngModelChange)="onCheckboxChange('edu')"
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="flexCheckDefault"
+                />
+                <label class="form-check-label" for="flexCheckDefault">
+                  Current
+                </label>
+              </div>
+            </div>
+
+            <div class="col-sm-12 col-md-4">
               <button
                 *ngIf="!editEduMode"
                 type="button"
@@ -455,28 +470,26 @@
         </div>
 
         <ng-container *ngIf="experience.length > 0; else noDataExp">
-          <div class="col-lg-4 col-sm-6 mb-3">
-            <div class="card-group">
-              <div class="card" *ngFor="let item of experience">
-                <div class="card-body">
-                  <h5 class="card-title">{{ item.company }}</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">
-                    {{ item.charge }}
-                  </h6>
-                  <p class="card-text">
-                    {{ item.dateStart }} - {{ item.dateEnd }}
-                  </p>
-                  <p class="card-text">{{ item.description }}</p>
-                  <ul>
-                    <li *ngFor="let func of item.functions">{{ func }}</li>
-                  </ul>
-                  <button
-                    class="btn btn-primary"
-                    (click)="triggerEditExperience(item)"
-                  >
-                    Edit
-                  </button>
-                </div>
+          <div class="cards-container">
+            <div class="card content-item mr-2" *ngFor="let item of experience">
+              <div class="card-body">
+                <h5 class="card-title text-muted">{{ item.company }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                  {{ item.charge }}
+                </h6>
+                <p class="card-text">
+                  {{ item.dateStart }} - {{ item.dateEnd || "Current" }}
+                </p>
+                <p class="card-text">{{ item.description }}</p>
+                <ul>
+                  <li *ngFor="let func of item.functions">{{ func }}</li>
+                </ul>
+                <button
+                  class="btn btn-primary"
+                  (click)="triggerEditExperience(item)"
+                >
+                  Edit
+                </button>
               </div>
             </div>
           </div>
@@ -501,6 +514,19 @@
                 id="company"
                 placeholder="Enter the company"
               />
+              <div
+                *ngIf="
+                  expForm.get('company').invalid &&
+                  expForm.get('company').touched
+                "
+              >
+                <div
+                  class="required-field"
+                  *ngIf="expForm.get('company').hasError('required')"
+                >
+                  Company is required
+                </div>
+              </div>
             </div>
             <div class="form-group col-sm-12 col-md-6">
               <label for="charge">Charge</label>
@@ -511,6 +537,18 @@
                 id="charge"
                 placeholder="Enter your charge"
               />
+              <div
+                *ngIf="
+                  expForm.get('charge').invalid && expForm.get('charge').touched
+                "
+              >
+                <div
+                  class="required-field"
+                  *ngIf="expForm.get('charge').hasError('required')"
+                >
+                  Charge is required
+                </div>
+              </div>
             </div>
           </div>
 
@@ -524,6 +562,19 @@
                 id="description"
                 placeholder="Enter the description"
               />
+              <div
+                *ngIf="
+                  expForm.get('description').invalid &&
+                  expForm.get('description').touched
+                "
+              >
+                <div
+                  class="required-field"
+                  *ngIf="expForm.get('description').hasError('required')"
+                >
+                  Description is required
+                </div>
+              </div>
             </div>
           </div>
 
@@ -538,6 +589,19 @@
                   class="form-control"
                 />
               </div>
+              <div
+                *ngIf="
+                  expForm.get('dateStart').invalid &&
+                  expForm.get('dateStart').touched
+                "
+              >
+                <div
+                  class="required-field"
+                  *ngIf="expForm.get('dateStart').hasError('required')"
+                >
+                  Start date is required
+                </div>
+              </div>
             </div>
             <div class="form-group col-sm-12 col-md-4">
               <label for="datepicker">End date</label>
@@ -548,6 +612,34 @@
                   id="datepicker"
                   class="form-control"
                 />
+              </div>
+              <div
+                *ngIf="
+                  expForm.get('dateEnd').invalid &&
+                  expForm.get('dateEnd').touched
+                "
+              >
+                <div
+                  class="required-field"
+                  *ngIf="expForm.get('dateEnd').hasError('required')"
+                >
+                  End date is required
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm-12 col-md-4" style="padding: 35px">
+              <div class="form-check">
+                <input
+                  formControlName="current"
+                  (ngModelChange)="onCheckboxChange('exp')"
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="flexCheckDefault"
+                />
+                <label class="form-check-label" for="flexCheckDefault">
+                  Current
+                </label>
               </div>
             </div>
           </div>
@@ -571,6 +663,7 @@
                       [id]="'name-' + i"
                       placeholder="Enter your responsability"
                     />
+
                     <div *ngIf="i > 0">
                       <i
                         style="padding: 0 15px; cursor: pointer"
