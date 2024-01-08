@@ -1,0 +1,90 @@
+<div style="margin-bottom: 24px">
+    <div style="display: flex; justify-content: space-between">
+        <h4 class="mb-3 font-weight-bold text-muted">Personal Info</h4>
+    </div>
+
+    <form [formGroup]="cvForm">
+        <div class="row">
+
+            <!-- Picture -->
+            <div class="col-sm-12 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                <label for="name" class="mt-2">Profile picture</label>
+                <label for="upload" class="custom-upload-container">
+                    <div *ngIf="!uploadedPicture" class="custom-file-upload" style="cursor: pointer;">
+                        <input type="file" id="upload" accept="image/*" (change)="onPictureChange($event)"
+                            style="display: none;" />
+                        <i class="fas fa-cloud-upload-alt"></i> Upload picture
+                    </div>
+                </label>
+                <ng-container *ngIf="uploadedPicture">
+                    <div class="uploaded-image">
+                        <img [src]="uploadedPicture" alt="Uploaded Picture" width="200" height="200" />
+                    </div>
+                    <button class="btn btn-link mt-2" (click)="changePicture()">Change Picture</button>
+                </ng-container>
+            </div>
+
+            <!-- Personal data form -->
+            <div class="col-sm-12 col-md-6">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input formControlName="name" type="text" class="form-control" id="name"
+                        placeholder="Enter your name" />
+                    <div *ngIf="cvForm.get('name').invalid && cvForm.get('name').touched">
+                        <div class="required-field" *ngIf="cvForm.get('name').hasError('required')">
+                            Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input formControlName="email" type="text" class="form-control" id="email"
+                        placeholder="Enter your email" />
+                    <div *ngIf="cvForm.get('email').invalid && cvForm.get('email').touched">
+                        <div class="required-field" *ngIf="cvForm.get('email').hasError('required')">
+                            Email is required
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input formControlName="phone" type="text" class="form-control" id="phone"
+                        placeholder="Enter your phone" />
+                    <div *ngIf="cvForm.get('phone').invalid && cvForm.get('phone').touched">
+                        <div class="required-field" *ngIf="cvForm.get('phone').hasError('required')">
+                            Phone is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-12 col-md-6">
+                <label for="headline">Headline</label>
+                <input formControlName="headline" type="text" class="form-control" id="headline"
+                    placeholder="Enter your headline" />
+                <div *ngIf="
+                cvForm.get('headline').invalid &&
+                cvForm.get('headline').touched
+              ">
+                    <div class="required-field" *ngIf="cvForm.get('headline').hasError('required')">
+                        Headline is required
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-sm-12 col-md-6">
+                <label for="profile">Profile</label>
+                <input formControlName="profile" type="text" class="form-control" id="profile"
+                    placeholder="Enter your profile" />
+                <div *ngIf="
+                cvForm.get('profile').invalid && cvForm.get('profile').touched
+              ">
+                    <div class="required-field" *ngIf="cvForm.get('profile').hasError('required')">
+                        Profile is required
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>

@@ -1,2 +1,79 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.css";
+
+
+/* Cards */
+.cards-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-bottom: 15px;
+  
+    .card {
+      display: inline-block;
+      width: 350px;
+      height: 300px;
+    }
+  
+    .card-body {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .card-title {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  
+    .card-subtitle,
+    .card-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+  
+
+/* Form */
+
+.required-field {
+    color: red;
+}
+
+
+/* Alert */
+.alert {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin: 80px 25px 10px 25px;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+
+/* No data */
+.no-data-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-bottom: 5px;
+}
+
+.no-data-container i {
+    font-size: 24px;
+    color: #d98880;
+    margin-bottom: 10px;
+}

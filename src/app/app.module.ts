@@ -9,11 +9,16 @@ import { CVBuilderComponent } from './cv-builder/cv-builder.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { StepperComponent } from './stepper/stepper.component';
+import { SectionsModule } from './sections/sections.module';
+import { StepperModule } from './stepper/stepper.module';
+import { LayoutModule } from './layout/layout.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CVBuilderComponent
+    CVBuilderComponent,
+    StepperComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +29,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    LayoutModule,
+    SectionsModule,
+    StepperModule
   ],
   providers: [],
   bootstrap: [AppComponent]

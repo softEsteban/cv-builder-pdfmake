@@ -1,0 +1,39 @@
+<style>
+    @media (max-width: 576px) {
+        .btn {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+<div class="text-center" style="padding: 80px 20px">
+    <button (click)="showStep(1)" class="btn btn-primary btn-lg mb-3 mr-2" [class.active]="activeStep === 1">
+        <i class="fas fa-user"></i> Personal Info
+    </button>
+    <button (click)="showStep(2)" class="btn btn-primary btn-lg mb-3 mr-2" [class.active]="activeStep === 2">
+        <i class="fas fa-chart-bar"></i> Skills
+    </button>
+    <button (click)="showStep(3)" class="btn btn-primary btn-lg mb-3 mr-2" [class.active]="activeStep === 3">
+        <i class="fas fa-graduation-cap"></i> Education
+    </button>
+    <button (click)="showStep(4)" class="btn btn-primary btn-lg mb-3 mr-2" [class.active]="activeStep === 4">
+        <i class="fas fa-briefcase"></i> Experience
+    </button>
+</div>
+
+<div class="text-center mt-4">
+    <div id="step1" class="step-content" *ngIf="activeStep === 1">
+        <app-personal-info></app-personal-info>
+    </div>
+    <div id="step2" class="step-content" *ngIf="activeStep === 2">
+        <app-skills></app-skills>
+    </div>
+    <div id="step3" class="step-content" *ngIf="activeStep === 3">
+        <app-education></app-education>
+    </div>
+    <div id="step4" class="step-content" *ngIf="activeStep === 4">
+        <app-experience></app-experience>
+    </div>
+</div>

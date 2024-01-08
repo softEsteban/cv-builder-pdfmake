@@ -1,0 +1,43 @@
+<div style="margin-bottom: 24px">
+    <div class="row">
+        <div class="col-lg-2 col-sm-12">
+            <h4 class="mb-3 font-weight-bold text-muted">Skills</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-10 col-sm-12 input-group mb-3" style="height: 100%; gap: 10px">
+            <input type="text" class="form-control" [(ngModel)]="searchQuery" (input)="handleSearchChange()"
+                placeholder="Search a skill" id="searchInput" />
+            <div *ngIf="showSpinner" class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+            <select #skillsSelect class="custom-select" id="inputGroupSelect04" [disabled]="showSpinner"
+                [(ngModel)]="selectedSkill">
+                <option selected>Choose a skill</option>
+                <option *ngFor="let skill of skillsRes" [value]="skill">
+                    {{ skill }}
+                </option>
+            </select>
+            <button (click)="addSkill()" type="button" [disabled]="selectedSkill === ''" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Skill
+            </button>
+        </div>
+    </div>
+    <ng-container *ngIf="skills.length > 0; else noDataSkills">
+        <div class="row" style="margin-top: 25px">
+            <div class="d-flex flex-wrap">
+                <ng-container *ngFor="let item of skills">
+                    <span style="font-size: 100%; " class="badge badge-pill badge-primary">{{ item }}
+                        <i style="cursor: pointer" class="fas fa-times" (click)="deleteSkill(item)"></i>
+                    </span>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #noDataSkills>
+        <div class="no-data-container">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>You haven't added any skill yet.</p>
+        </div>
+    </ng-template>
+</div>

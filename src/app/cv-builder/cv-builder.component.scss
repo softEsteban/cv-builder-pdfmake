@@ -1,56 +1,52 @@
-.form-sections {
-  margin-top: 110px;
-}
+.custom-upload-container {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  cursor: pointer;
 
-.custom-link {
-  color: gray;
-  text-decoration: none;
-}
-
-.custom-link:hover {
-  text-decoration: none;
-  color: black;
-}
-
-.required-field {
-  color: red;
-}
-
-.no-data-container {
-  height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.cards-container {
-  overflow-x: auto;
-  white-space: nowrap;
-  margin-bottom: 15px;
-
-  .card {
-    display: inline-block;
-    width: 350px;
-    height: 300px;
-  }
-
-  .card-body {
-    height: 100%;
+  .custom-file-upload {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 200px;
+    border: 2px dashed #337ab7;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #337ab7;
+    transition: border-color 0.3s;
   }
+}
 
-  .card-title {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+input[type="file"] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
+}
 
-  .card-subtitle,
-  .card-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.custom-file-upload i {
+  margin-right: 5px;
+}
+
+.custom-file-upload:hover {
+  border-color: #23527c;
+}
+
+.uploaded-image {
+  display: none;
+  width: 200px;
+  height: 200px;
+  border: 2px dashed #337ab7;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.uploaded-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
