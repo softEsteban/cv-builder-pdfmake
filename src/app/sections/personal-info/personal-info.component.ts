@@ -15,7 +15,10 @@ export class PersonalInfoComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
     phone: new FormControl('', Validators.required),
     headline: new FormControl('', Validators.required),
-    profile: new FormControl('', Validators.required)
+    profile: new FormControl('', Validators.required),
+    linkedin: new FormControl('', Validators.required),
+    website: new FormControl('', Validators.required),
+    portfolio: new FormControl('', Validators.required)
   });
 
   uploadedPicture: string | ArrayBuffer | null = null;
@@ -42,14 +45,6 @@ export class PersonalInfoComponent {
       this.cvDataService.setFormData(this.cvForm.value);
     });
   }
-
-  // ngOnDestroy() {
-  //   this.cvDataService.setFormData(this.cvForm.value);
-
-  //   if (this.base64img) {
-  //     this.cvDataService.setImage(this.base64img);
-  //   }
-  // }
 
   onPictureChange(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -100,4 +95,5 @@ export class PersonalInfoComponent {
     // Read the file as Data URL (base64)
     reader.readAsDataURL(file);
   }
+
 }

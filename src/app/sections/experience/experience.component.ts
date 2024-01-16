@@ -93,8 +93,8 @@ export class ExperienceComponent {
   initializeExperienceContent() {
     this.experienceContent = this.experience.map(item => [
       { text: item.company, bold: true, margin: [0, 10] },
-      { text: 'Position: ' + item.charge, margin: [0, 5] },
-      { text: 'Duration: ' + new Date(item.dateStart).getFullYear() + ' - ' + new Date(item.dateEnd).getFullYear(), margin: [0, 5] },
+      { text: item.charge, margin: [0, 5] },
+      { text: new Date(item.dateStart).getFullYear() + ' - ' + new Date(item.dateEnd).getFullYear(), margin: [0, 5] },
       { text: 'Responsibilities:', margin: [0, 10] },
       { ul: item.functions.map(func => ({ text: func })), margin: [20, 0] },
     ])

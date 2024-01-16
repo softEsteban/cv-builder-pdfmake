@@ -15,7 +15,7 @@
                     </p>
                     <p class="card-text">{{ item.description }}</p>
                     <ul>
-                        <li *ngFor="let func of item.functions">{{ func }}</li>
+                        <li class="text-truncate" *ngFor="let func of item.functions">{{ func }}</li>
                     </ul>
                     <button class="btn btn-primary" (click)="triggerEditExperience(item)">
                         Edit

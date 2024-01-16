@@ -25,7 +25,6 @@ export class CVBuilderComponent {
   educationContent = [];
   experienceContent = [];
 
-
   // Pdfs variables
   pdfSrc: SafeResourceUrl;
   pdfDefinition: any = {};
@@ -33,9 +32,7 @@ export class CVBuilderComponent {
   constructor(
     private sanitizer: DomSanitizer,
     public alertService: AlertService,
-    private cvDataService: CvDataService) {
-
-  }
+    private cvDataService: CvDataService) { }
 
   async createPdf() {
 
@@ -47,32 +44,48 @@ export class CVBuilderComponent {
     this.experienceContent = this.cvDataService.getExperienceDataContent();
 
     // Build pdf structure
-
     this.userName = this.personalInfoData.name || '';
 
     this.pdfDefinition = {
       content: [
         {
-          image: "",
-          width: 100
+          columns: [
+            {
+              stack: [
+                {
+                  image: "",
+                  width: 100
+                },
+              ],
+              width: '30%'
+            },
+            {
+              stack: [
+                { text: this.personalInfoData.name || '', fontSize: 30, bold: true },
+                { text: this.personalInfoData.headline || '', fontSize: 14, margin: [0, 12] }
+              ]
+            }
+          ]
         },
         {
           columns: [
             {
               stack: [
-                { text: this.personalInfoData.name || '', fontSize: 18, bold: true },
-                { text: this.personalInfoData.headline || '', fontSize: 14, margin: [0, 12] },
-                { text: this.personalInfoData.email || '', fontSize: 8, },
-                { text: this.personalInfoData.phone || '', fontSize: 8, margin: [0, 12] },
+                { text: 'Contact', style: 'sectionHeading', margin: [0, 20], color: '#000' },
+                { text: this.personalInfoData.email || '', fontSize: 10 },
+                { text: "LinkedIn", link: this.personalInfoData.linkedin, fontSize: 10, },
+                { text: "My website", link: this.personalInfoData.website, fontSize: 10, },
+                { text: "My portfolio", link: this.personalInfoData.portfolio, fontSize: 10, },
+                { text: this.personalInfoData.phone || '', fontSize: 10 },
+                { text: 'Skills', style: 'sectionHeading', margin: [0, 20], color: '#000' },
                 { ul: null },
-
               ],
               width: '30%',
             },
             {
               stack: [
                 { text: 'Profile', style: 'sectionHeading', margin: [0, 20], color: '#000' },
-                { text: this.personalInfoData.profile || '', margin: [0, 10] },
+                { text: this.personalInfoData.profile || '',  fontSize: 10, margin: [0, 10] },
                 { text: 'Experience', style: 'sectionHeading', margin: [0, 20], color: '#000' },
                 ...this.experienceContent,
                 { text: 'Education', style: 'sectionHeading', margin: [0, 20], color: '#000' },
@@ -89,8 +102,8 @@ export class CVBuilderComponent {
     };
 
     // Add base64 image and skills list 
-    this.pdfDefinition.content[0].image = this.base64img;
-    this.pdfDefinition.content[1].columns[0].stack[4].ul = this.skillsData.map(skill => ({ text: skill }));
+    this.pdfDefinition.content[0].columns[0].stack[0].image = this.base64img;
+    this.pdfDefinition.content[1].columns[0].stack[7].ul = this.skillsData.map(skill => ({ text: skill, fontSize: 10 }));
   }
 
   async viewPdf() {
@@ -122,6 +135,10 @@ export class CVBuilderComponent {
 
     const pdfDocGenerator = pdfMake.createPdf(this.pdfDefinition);
     pdfDocGenerator.download(`CV-${this.userName.replace(" ", "-")}.pdf`);
+  }
+
+  async loadMockCV() {
+    this.cvDataService.setMockData();
   }
 
 }

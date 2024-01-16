@@ -9,6 +9,7 @@ export class NavbarComponent {
 
   @Output() notifyViewPdf: EventEmitter<any> = new EventEmitter<any>();
   @Output() notifyDownloadPdf: EventEmitter<any> = new EventEmitter<any>();
+  @Output() notifyLoadMockCV: EventEmitter<any> = new EventEmitter<any>();
 
   viewPdf() {
     this.notifyViewPdf.emit();
@@ -16,5 +17,9 @@ export class NavbarComponent {
 
   downloadPdf() {
     this.notifyDownloadPdf.emit();
+  }
+  
+  loadMockCV() {
+    this.notifyLoadMockCV.emit();
   }
 }
