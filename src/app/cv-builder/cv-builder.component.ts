@@ -77,6 +77,10 @@ export class CVBuilderComponent {
                 { text: "My website", link: this.personalInfoData.website, fontSize: 10, },
                 { text: "My portfolio", link: this.personalInfoData.portfolio, fontSize: 10, },
                 { text: this.personalInfoData.phone || '', fontSize: 10 },
+
+                { text: 'Languages', style: 'sectionHeading', margin: [0, 20], color: '#000' },
+                { ul: null },
+                
                 { text: 'Skills', style: 'sectionHeading', margin: [0, 20], color: '#000' },
                 { ul: null },
               ],
@@ -86,8 +90,10 @@ export class CVBuilderComponent {
               stack: [
                 { text: 'Profile', style: 'sectionHeading', margin: [0, 20], color: '#000' },
                 { text: this.personalInfoData.profile || '',  fontSize: 10, margin: [0, 10] },
+
                 { text: 'Experience', style: 'sectionHeading', margin: [0, 20], color: '#000' },
                 ...this.experienceContent,
+
                 { text: 'Education', style: 'sectionHeading', margin: [0, 20], color: '#000' },
                 ...this.educationContent,
               ],
@@ -101,9 +107,11 @@ export class CVBuilderComponent {
       },
     };
 
-    // Add base64 image and skills list 
+    // Add base64 image, languages and skills list 
     this.pdfDefinition.content[0].columns[0].stack[0].image = this.base64img;
-    this.pdfDefinition.content[1].columns[0].stack[7].ul = this.skillsData.map(skill => ({ text: skill, fontSize: 10 }));
+    this.pdfDefinition.content[1].columns[0].stack[7].ul = this.personalInfoData.languages.map(lang => ({ text: `${lang.language} |  ${lang.proficiency}`, fontSize: 10 }));
+    this.pdfDefinition.content[1].columns[0].stack[9].ul = this.skillsData.map(skill => ({ text: skill, fontSize: 10 }));
+
   }
 
   async viewPdf() {

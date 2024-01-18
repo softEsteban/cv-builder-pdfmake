@@ -37,7 +37,6 @@ export class CvDataService {
     }
 
     getImage(): string | null {
-        console.log(this.storedImage)
         return this.storedImage;
     }
 
@@ -53,7 +52,6 @@ export class CvDataService {
 
     setEducationDataContent(data: any) {
         this.educationDataContent = data;
-
     }
 
     setEducationData(data: any) {
@@ -87,7 +85,7 @@ export class CvDataService {
     }
 
     getFileContent(): Observable<string> {
-        const filePath = 'assets/photo.txt'; 
+        const filePath = 'assets/photo.txt';
         return this.http.get(filePath, { responseType: 'text' });
     }
 
@@ -101,9 +99,20 @@ export class CvDataService {
             "linkedin": "https://www.linkedin.com/in/softesteban",
             "website": "https://etoro-roan.vercel.app/",
             "portfolio": "https://etoro-roan.vercel.app/",
+            "languages": [
+                {
+                    "language": "Spanish",
+                    "proficiency": "C2",
+                },
+                {
+                    "language": "English",
+                    "proficiency": "B2",
+                }
+            ]
         };
 
         const imageBase: string = await firstValueFrom(this.getFileContent());
+        
         const mockSkills = ["MongoDB", "PostgreSQL", "Nodejs", "Nextjs", "Angular"];
 
         const mockEduData = [{
@@ -114,29 +123,27 @@ export class CvDataService {
             "dateEnd": "2024-01-27",
             "current": ""
         }];
+
         const mockEduDataContent = [[
-            {
-                "text": "Analisis y desarrollo de software",
-                "bold": true,
-                "margin": [
-                    0,
-                    10
-                ]
-            },
-            {
-                "text": "sena",
-                "margin": [
-                    0,
-                    5
-                ]
-            },
-            {
-                "text": "2024 - 2024",
-                "margin": [
-                    0,
-                    5
-                ]
-            }
+            [
+                {
+                    "text": "Análisis y Desarrollo de Software",
+                    "bold": true,
+                    "margin": [
+                        0,
+                        10
+                    ]
+                },
+                {
+                    "text": "SENA | Jan 11, 2024 - Invalid Date",
+                    "margin": [
+                        0,
+                        5
+                    ],
+                    "fontSize": 10
+                }
+            ]
+
         ]]
 
         const mockExpData = [
@@ -156,36 +163,24 @@ export class CvDataService {
                 "current": ""
             }
         ];
+
         const mockExpDataContent = [
             [
                 {
-                    "text": "TITANQ INGENIERIA",
+                    "text": "Fullstack Team Leader",
                     "bold": true,
                     "margin": [
                         0,
-                        10
-                    ]
-                },
-                {
-                    "text": "Fullstack Team Leader",
-                    "margin": [
-                        0,
                         5
                     ]
                 },
                 {
-                    "text": "2024 - 2024",
+                    "text": "TITANQ INGENIERIA | Jan 3, 2024 - Jan 24, 2024",
                     "margin": [
                         0,
                         5
-                    ]
-                },
-                {
-                    "text": "Responsibilities:",
-                    "margin": [
-                        0,
-                        10
-                    ]
+                    ],
+                    "fontSize": 10
                 },
                 {
                     "ul": [
@@ -205,7 +200,8 @@ export class CvDataService {
                     "margin": [
                         20,
                         0
-                    ]
+                    ],
+                    "fontSize": 10
                 }
             ]
         ];

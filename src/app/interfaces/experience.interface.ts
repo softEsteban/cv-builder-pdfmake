@@ -4,7 +4,7 @@ export interface ExperienceItem {
     charge: string;
     description: string;
     functions: string[];
-    dateStart: Date;
-    dateEnd: Date;
+    dateStart: string;
+    dateEnd: string;
     current: boolean;
 }

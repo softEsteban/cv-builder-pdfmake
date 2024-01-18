@@ -13,15 +13,19 @@ import { StepperComponent } from './stepper/stepper.component';
 import { SectionsModule } from './sections/sections.module';
 import { StepperModule } from './stepper/stepper.module';
 import { LayoutModule } from './layout/layout.module';
+import { LandingComponent } from './landing/landing.component';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     CVBuilderComponent,
-    StepperComponent
+    StepperComponent,
+    LandingComponent
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     HttpClientModule,
     MatDatepickerModule,
     MatNativeDateModule,

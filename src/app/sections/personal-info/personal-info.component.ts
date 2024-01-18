@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertService } from 'src/app/services/alert.service';
 import { CvDataService } from 'src/app/services/cv.data.service';
 
@@ -10,6 +10,43 @@ import { CvDataService } from 'src/app/services/cv.data.service';
 })
 export class PersonalInfoComponent {
 
+  languagesSelect = [
+    "English",
+    "Spanish",
+    "French",
+    "German",
+    "Mandarin Chinese",
+    "Japanese",
+    "Russian",
+    "Portuguese",
+    "Italian",
+    "Arabic",
+    "Hindi",
+    "Dutch",
+    "Korean",
+    "Turkish",
+    "Swedish",
+    "Norwegian",
+    "Danish",
+    "Finnish",
+    "Hebrew",
+    "Greek",
+    "Polish",
+    "Czech",
+    "Hungarian",
+    "Thai",
+    "Indonesian",
+    "Malay",
+    "Vietnamese",
+    "Tagalog",
+    "Swahili",
+    "Hausa",
+    "Urdu",
+    "Bengali"
+  ];
+
+  proficiencyLevels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
   cvForm: FormGroup = new FormGroup({
     name: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -18,7 +55,13 @@ export class PersonalInfoComponent {
     profile: new FormControl('', Validators.required),
     linkedin: new FormControl('', Validators.required),
     website: new FormControl('', Validators.required),
-    portfolio: new FormControl('', Validators.required)
+    portfolio: new FormControl('', Validators.required),
+    languages: new FormArray([
+      new FormGroup({
+        language: new FormControl('', Validators.required),
+        proficiency: new FormControl('', Validators.required)
+      })
+    ]),
   });
 
   uploadedPicture: string | ArrayBuffer | null = null;
@@ -32,7 +75,10 @@ export class PersonalInfoComponent {
   ngOnInit() {
     const storedData = this.cvDataService.getFormData();
     if (storedData) {
+      console.log(storedData)
       this.cvForm.patchValue(storedData);
+
+      this.cvForm.get('languages').patchValue(storedData.languages);
     }
 
     const storedImage = this.cvDataService.getImage();
@@ -94,6 +140,28 @@ export class PersonalInfoComponent {
     };
     // Read the file as Data URL (base64)
     reader.readAsDataURL(file);
+  }
+
+  get languages(): FormArray {
+    return this.cvForm.get('languages') as FormArray;
+  }
+
+  handleProfiencyClick(index: any, level: any) {
+    console.log(this.cvForm.value)
+    this.cvForm.get('languages.' + index + '.proficiency').setValue(level)
+    console.log(this.cvForm.value)
+  }
+
+  addLanguage() {
+    const language = new FormGroup({
+      language: new FormControl('', Validators.required),
+      proficiency: new FormControl('', Validators.required),
+    });
+    this.languages.push(language);
+  }
+
+  deleteLanguage(index: number) {
+    this.languages.removeAt(index);
   }
 
 }

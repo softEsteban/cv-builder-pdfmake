@@ -11,7 +11,20 @@ import { CvDataService } from 'src/app/services/cv.data.service';
 })
 export class ExperienceComponent {
 
-  expForm: FormGroup;
+  expForm: FormGroup = new FormGroup({
+    id: new FormControl(''),
+    company: new FormControl('', Validators.required),
+    charge: new FormControl('', Validators.required),
+    description: new FormControl('', Validators.required),
+    functions: new FormArray([
+      new FormGroup({
+        name: new FormControl('', Validators.required)
+      })
+    ]),
+    dateStart: new FormControl('', [Validators.required, this.dateValidator]),
+    dateEnd: new FormControl('', []),
+    current: new FormControl({ value: '', disabled: false })
+  });
   editExpMode: boolean = false;
 
   functionsList: string[] = ["Create amazing apps with Angular and .NET"];
@@ -44,22 +57,7 @@ export class ExperienceComponent {
   constructor(
     private alertService: AlertService,
     private cvDataService: CvDataService
-  ) {
-    this.expForm = new FormGroup({
-      id: new FormControl(''),
-      company: new FormControl('', Validators.required),
-      charge: new FormControl('', Validators.required),
-      description: new FormControl('', Validators.required),
-      functions: new FormArray([
-        new FormGroup({
-          name: new FormControl('', Validators.required)
-        })
-      ]),
-      dateStart: new FormControl('', [Validators.required, this.dateValidator]),
-      dateEnd: new FormControl('', []),
-      current: new FormControl({ value: '', disabled: false })
-    });
-  }
+  ) { }
 
   ngOnInit() {
     const storedData = this.cvDataService.getExperienceData();
@@ -92,16 +90,24 @@ export class ExperienceComponent {
 
   initializeExperienceContent() {
     this.experienceContent = this.experience.map(item => [
-      { text: item.company, bold: true, margin: [0, 10] },
-      { text: item.charge, margin: [0, 5] },
-      { text: new Date(item.dateStart).getFullYear() + ' - ' + new Date(item.dateEnd).getFullYear(), margin: [0, 5] },
-      { text: 'Responsibilities:', margin: [0, 10] },
-      { ul: item.functions.map(func => ({ text: func })), margin: [20, 0] },
+      { text: item.charge, bold: true, margin: [0, 5] },
+      {
+        text: `${item.company} | ${this.formatDate(item.dateStart)} - ${ this.expForm.get("dateEnd").disabled ?  "Current" : this.formatDate(item.dateEnd)}`, margin: [0, 5], fontSize: 10
+      },
+      { ul: item.functions.map(func => ({ text: func })), margin: [20, 0], fontSize: 10 },
     ])
 
     //Update data service
     this.cvDataService.setExperienceData(this.experience);
     this.cvDataService.setExperienceDataContent(this.experienceContent);
+  }
+
+  formatDate(date: any) {
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
   }
 
   get functions(): FormArray {

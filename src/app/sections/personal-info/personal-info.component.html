@@ -4,6 +4,7 @@
     </div>
 
     <form [formGroup]="cvForm">
+
         <div class="row">
 
             <!-- Picture -->
@@ -57,7 +58,9 @@
                     </div>
                 </div>
             </div>
+
         </div>
+
         <div class="row">
             <div class="form-group col-sm-12 col-md-6">
                 <label for="headline">Headline</label>
@@ -88,7 +91,7 @@
 
         <div class="row">
             <div class="form-group col-sm-12 col-md-4">
-                <label for="linkedin">Portfolio</label>
+                <label for="linkedin">LinkedIn Profile</label>
                 <input formControlName="linkedin" type="text" class="form-control" id="linkedin"
                     placeholder="Enter your Linkedin url" />
                 <div *ngIf="
@@ -113,7 +116,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="form-group col-sm-12 col-md-4">
                 <label for="portfolio">Portfolio</label>
                 <input formControlName="portfolio" type="text" class="form-control" id="portfolio"
@@ -126,6 +129,50 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <ng-container formArrayName="languages">
+            <div *ngFor="let languageGroup of languages.controls; let i = index" [formGroupName]="i" class="row">
+
+                <div class="form-group col-sm-12 col-md-4">
+                    <label for="language"> {{'Language ' + (i + 1)}}</label>
+                    <select formControlName="language" class="form-control" id="language">
+                        <option value="" disabled selected>Select a language</option>
+                        <option *ngFor="let lang of languagesSelect" [value]="lang">{{ lang }}</option>
+                    </select>
+                    <div *ngIf="languages.at(i).get('language').invalid && languages.at(i).get('language').touched">
+                        <div class="required-field" *ngIf="languages.at(i).get('language').hasError('required')">
+                            Language is required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-12 col-md-4">
+                    <label for="proficiency">Proficiency Level</label>
+                    <div class="d-flex">
+                        <button *ngFor="let level of proficiencyLevels" type="button" class="btn btn-secondary mr-2"
+                                [ngClass]="{ 'btn-active': languages.at(i).get('proficiency').value === level }"
+                                
+                                (click)="handleProfiencyClick(i, level)">
+                            {{ level }}
+                        </button>
+                        <div *ngIf="i > 0">
+                            <i style="padding: 0 15px; cursor: pointer" class="fas fa-times"
+                                (click)="deleteLanguage(i)"></i>
+                        </div>
+                    </div>
+                    <div *ngIf="cvForm.get('languages.' + i + '.proficiency').invalid && cvForm.get('languages.' + i + '.proficiency').touched">
+                        <div class="required-field" *ngIf="cvForm.get('languages.' + i + '.proficiency').hasError('required')">
+                            Proficiency Level is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" (click)="addLanguage()"><i class="fas fa-plus"></i>
+                Add</button>
         </div>
 
     </form>

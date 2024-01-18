@@ -2,8 +2,8 @@ export interface EducationItem {
     id: string;
     institute: string;
     degree: string;
-    dateStart: Date;
-    dateEnd: Date;
+    dateStart: string;
+    dateEnd: string;
     current: boolean;
   }
   

@@ -11,7 +11,14 @@ import { CvDataService } from 'src/app/services/cv.data.service';
 })
 export class EducationComponent {
 
-  eduForm: FormGroup;
+  eduForm: FormGroup = new FormGroup({
+    id: new FormControl(''),
+    degree: new FormControl(null, Validators.required),
+    institute: new FormControl('', Validators.required),
+    dateStart: new FormControl('', [Validators.required, this.dateValidator]),
+    dateEnd: new FormControl('', []),
+    current: new FormControl({ value: '', disabled: false })
+  });
   editEduMode: boolean = false;
 
   isCheckedCurrentEdu: boolean = false;
@@ -56,16 +63,7 @@ export class EducationComponent {
   constructor(
     private alertService: AlertService,
     private cvDataService: CvDataService
-  ) {
-    this.eduForm = new FormGroup({
-      id: new FormControl(''),
-      degree: new FormControl(null, Validators.required),
-      institute: new FormControl('', Validators.required),
-      dateStart: new FormControl('', [Validators.required, this.dateValidator]),
-      dateEnd: new FormControl('', []),
-      current: new FormControl({ value: '', disabled: false })
-    });
-  }
+  ) { }
 
   ngOnInit() {
 
@@ -151,13 +149,22 @@ export class EducationComponent {
   initializeEducationContent() {
     this.educationContent = this.education.map(item => [
       { text: item.degree, bold: true, margin: [0, 10] },
-      { text: item.institute, margin: [0, 5] },
-      { text: new Date(item.dateStart).getFullYear() + ' - ' + new Date(item.dateEnd).getFullYear(), margin: [0, 5] },
+      {
+        text: `${item.institute} | ${this.formatDate(item.dateStart)} - ${this.eduForm.get("dateEnd").disabled ? "Current" : this.formatDate(item.dateEnd)}`, margin: [0, 5], fontSize: 10
+      }
     ]);
 
     //Update data service
     this.cvDataService.setEducationData(this.education);
     this.cvDataService.setEducationDataContent(this.educationContent);
+  }
+
+  formatDate(date: any) {
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
   }
 
   onCheckboxChange() {
