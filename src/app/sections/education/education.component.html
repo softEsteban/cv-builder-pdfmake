@@ -6,16 +6,16 @@
         <div class="cards-container">
             <div class="card content-item mr-2" *ngFor="let item of education">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">{{ item.degree }}</h5>
+                    <div class="d-flex  justify-content-between">
+                        <h5 class="card-title text-muted">{{ item.degree }}</h5>
+                        <i class="fas fa-edit" style="cursor: pointer;" (click)="triggerEditEducation(item)"></i>
+                    </div>
                     <h6 class="card-subtitle mb-2 text-muted">
                         {{ item.institute }}
                     </h6>
                     <p class="card-text">
-                        {{ item.dateStart }} - {{ item.dateEnd || "Current" }}
+                        {{ formatDate(item.dateStart) }} - {{ item.dateEnd ? formatDate(item.dateEnd) : "Current" }}
                     </p>
-                    <button class="btn btn-primary" (click)="triggerEditEducation(item)">
-                        Edit
-                    </button>
                 </div>
             </div>
         </div>

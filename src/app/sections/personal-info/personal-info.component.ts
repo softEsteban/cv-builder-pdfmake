@@ -75,8 +75,14 @@ export class PersonalInfoComponent {
   ngOnInit() {
     const storedData = this.cvDataService.getFormData();
     if (storedData) {
-      console.log(storedData)
       this.cvForm.patchValue(storedData);
+      
+      //Add form controls to form array
+      if(storedData.languages.length > 1 ){
+        for (let index = 0; index < storedData.languages.length - 1; index++) {
+          this.addLanguage();
+        }
+      }
 
       this.cvForm.get('languages').patchValue(storedData.languages);
     }
@@ -147,9 +153,7 @@ export class PersonalInfoComponent {
   }
 
   handleProfiencyClick(index: any, level: any) {
-    console.log(this.cvForm.value)
     this.cvForm.get('languages.' + index + '.proficiency').setValue(level)
-    console.log(this.cvForm.value)
   }
 
   addLanguage() {

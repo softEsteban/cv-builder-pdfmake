@@ -12,19 +12,20 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">CV Builder</a>
-
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" routerLink="/login">Login</a>
+                        <button class="btn btn-primary" (click)="viewPdf()">View PDF</button>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" routerLink="/about">About</a>
+                        <button class="btn btn-primary mr-2" (click)="downloadPdf()">Download PDF</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-primary mr-2" (click)="loadMockCV()">Load mock CV</button>
                     </li>
                 </ul>
             </div>

@@ -1,0 +1,46 @@
+.project-section {
+    padding: 50px 0;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 100px auto;
+}
+
+.developer-section {
+    padding: 50px 0;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 25px;
+}
+
+
+.developer-image {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 20px;
+    display: block;
+}
+
+
+.contact-section {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.contact-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.contact-message {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.contact-button {
+    font-size: 18px;
+    font-weight: bold;
+}

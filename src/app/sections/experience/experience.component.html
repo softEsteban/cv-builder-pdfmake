@@ -1,28 +1,29 @@
 <div class="row" style="margin-bottom: 24px">
-    <div style="display: flex; justify-content: space-between">
+    <div class="d-flex  justify-content-between">
         <h4 class="mb-3 font-weight-bold text-muted">Experience</h4>
     </div>
     <ng-container *ngIf="experience.length > 0; else noDataExp">
         <div class="cards-container">
             <div class="card content-item mr-2" *ngFor="let item of experience">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">{{ item.company }}</h5>
+                    <div class="d-flex  justify-content-between">
+                        <h5 class="card-title text-muted">{{ item.company }}</h5>
+                        <i class="fas fa-edit" style="cursor: pointer;" (click)="triggerEditExperience(item)"></i>
+                    </div>
                     <h6 class="card-subtitle mb-2 text-muted">
                         {{ item.charge }}
                     </h6>
                     <p class="card-text">
-                        {{ item.dateStart }} - {{ item.dateEnd || "Current" }}
+                        {{ formatDate(item.dateStart) }} - {{ item.dateEnd ? formatDate(item.dateEnd) : "Current" }}
                     </p>
                     <p class="card-text">{{ item.description }}</p>
                     <ul>
                         <li class="text-truncate" *ngFor="let func of item.functions">{{ func }}</li>
                     </ul>
-                    <button class="btn btn-primary" (click)="triggerEditExperience(item)">
-                        Edit
-                    </button>
                 </div>
             </div>
         </div>
+
     </ng-container>
     <ng-template #noDataExp>
         <div class="col-lg-12 col-md-12 col-sm-6">

@@ -13,15 +13,19 @@ import { StepperComponent } from './stepper/stepper.component';
 import { SectionsModule } from './sections/sections.module';
 import { StepperModule } from './stepper/stepper.module';
 import { LayoutModule } from './layout/layout.module';
-import { LandingComponent } from './landing/landing.component';
+import { LandingComponent } from './pages/landing/landing.component';
 import { AppRoutingModule } from './app-routing.module';
+import { LoginComponent } from './pages/login/login.component';
+import { AboutComponent } from './pages/about/about.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CVBuilderComponent,
     StepperComponent,
-    LandingComponent
+    LandingComponent,
+    LoginComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,

@@ -10,7 +10,7 @@
 
 <body>
   <!-- Navbar -->
-  <app-navbar (notifyViewPdf)="viewPdf()" (notifyDownloadPdf)="downloadPdf()" (notifyLoadMockCV)="loadMockCV()"></app-navbar>
+  <app-builder-navbar (notifyViewPdf)="viewPdf()" (notifyDownloadPdf)="downloadPdf()" (notifyLoadMockCV)="loadMockCV()"></app-builder-navbar>
 
   <!-- Alert -->
   <div *ngIf="this.alertService.showMessageAlert && this.alertService.alertMessage !== ''" class="alert alert-danger mb-0" role="alert">

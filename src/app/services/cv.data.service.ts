@@ -107,6 +107,10 @@ export class CvDataService {
                 {
                     "language": "English",
                     "proficiency": "B2",
+                },
+                {
+                    "language": "German",
+                    "proficiency": "A2",
                 }
             ]
         };
